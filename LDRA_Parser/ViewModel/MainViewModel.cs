@@ -1,36 +1,77 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using Microsoft.Win32;
+using System;
+using System.IO;
+using System.Windows.Input;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;   
 using System.Xml.Linq;
 
 namespace LDRA_Parser.ViewModel
 {
     class MainViewModel : INotifyPropertyChanged
     {
-        private Model.MainModel model = null;
-        public MainViewModel()
+        private string _htmlContent;
+        public string HtmlContent
         {
-            model = new Model.MainModel();
+            get { return _htmlContent; }
+            set
+            {
+                _htmlContent = value;
+                OnPropertyChanged();
+            }
         }
 
-        public Model.MainModel Model
+        public ICommand UploadCommand { get; }
+
+        public MainViewModel()
         {
-            get { return model; }
-            set { model = value; OnPropertyChanged("Model"); }
+            UploadCommand = new RelayCommand(UploadHtml);
+        }
+
+        private void UploadHtml()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "HTML files (*.html)|*.html|All files (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filePath = openFileDialog.FileName;
+                string htmlContent = File.ReadAllText(filePath);
+                ParseHtml(htmlContent);
+            }
+        }
+
+        private void ParseHtml(string htmlContent)
+        {
+            HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(htmlContent);
+
+            var paragraphs = htmlDocument.DocumentNode.SelectNodes("//table");
+            HtmlContent = "";
+
+            if (paragraphs != null)
+            {
+                foreach (var paragraph in paragraphs)
+                {
+                    HtmlContent += paragraph.InnerText + Environment.NewLine;
+                }
+            }
+            else
+            {
+                HtmlContent = "No <table> tags found.";
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string name)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
