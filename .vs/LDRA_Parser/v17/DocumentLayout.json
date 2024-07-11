@@ -1,22 +1,42 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\",
+  "WorkspaceRootPath": "C:\\moa\\LDRA_Parser\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\users\\0529y\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\ldra_parser\\ldra_parser\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\viewmodel\\filesystemviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\viewmodel\\filesystemviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\users\\0529y\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\ldra_parser\\ldra_parser\\model\\mainmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\model\\filesystemitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\model\\filesystemitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\model\\mainmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\model\\mainmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\users\\0529y\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\ldra_parser\\ldra_parser\\viewmodel\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\viewmodel\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\viewmodel\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\users\\0529y\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\ldra_parser\\ldra_parser\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|c:\\moa\\ldra_parser\\ldra_parser\\ldra_parser.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{38246657-9341-437C-908C-2F606A1C40A2}|LDRA_Parser\\LDRA_Parser.csproj|solutionrelative:ldra_parser\\ldra_parser.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -29,38 +49,85 @@
           "SelectedChildIndex": 2,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MainViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\ViewModel\\MainViewModel.cs",
-              "RelativeDocumentMoniker": "LDRA_Parser\\ViewModel\\MainViewModel.cs",
-              "ToolTip": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\ViewModel\\MainViewModel.cs",
-              "RelativeToolTip": "LDRA_Parser\\ViewModel\\MainViewModel.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAgwCIAAAAFAAAA",
+              "DocumentIndex": 0,
+              "Title": "FileSystemViewModel.cs",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\ViewModel\\FileSystemViewModel.cs",
+              "RelativeDocumentMoniker": "LDRA_Parser\\ViewModel\\FileSystemViewModel.cs",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\ViewModel\\FileSystemViewModel.cs",
+              "RelativeToolTip": "LDRA_Parser\\ViewModel\\FileSystemViewModel.cs",
+              "ViewState": "AQIAADoAAAAAAAAAAAAUwAwAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-11T05:11:32.198Z",
+              "WhenOpened": "2024-07-11T06:46:02.591Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "FileSystemItem.cs",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\Model\\FileSystemItem.cs",
+              "RelativeDocumentMoniker": "LDRA_Parser\\Model\\FileSystemItem.cs",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\Model\\FileSystemItem.cs",
+              "RelativeToolTip": "LDRA_Parser\\Model\\FileSystemItem.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-11T06:45:26.401Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "LDRA_Parser\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml.cs",
+              "RelativeToolTip": "LDRA_Parser\\MainWindow.xaml.cs",
+              "ViewState": "AQIAABoAAAAAAAAAAAAowCcAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-11T04:57:49.705Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "MainModel.cs",
-              "DocumentMoniker": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\Model\\MainModel.cs",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\Model\\MainModel.cs",
               "RelativeDocumentMoniker": "LDRA_Parser\\Model\\MainModel.cs",
-              "ToolTip": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\Model\\MainModel.cs",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\Model\\MainModel.cs",
               "RelativeToolTip": "LDRA_Parser\\Model\\MainModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAABAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-11T05:11:28.906Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "LDRA_Parser\\AssemblyInfo.cs",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\AssemblyInfo.cs",
+              "RelativeToolTip": "LDRA_Parser\\AssemblyInfo.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-11T06:10:36.734Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml",
               "RelativeDocumentMoniker": "LDRA_Parser\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml",
               "RelativeToolTip": "LDRA_Parser\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2024-07-11T04:57:58.202Z",
@@ -68,15 +135,40 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "LDRA_Parser\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\0529y\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\LDRA_Parser\\LDRA_Parser\\MainWindow.xaml.cs",
-              "RelativeToolTip": "LDRA_Parser\\MainWindow.xaml.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAFAAAA",
+              "DocumentIndex": 5,
+              "Title": "MainViewModel.cs",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\ViewModel\\MainViewModel.cs",
+              "RelativeDocumentMoniker": "LDRA_Parser\\ViewModel\\MainViewModel.cs",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\ViewModel\\MainViewModel.cs",
+              "RelativeToolTip": "LDRA_Parser\\ViewModel\\MainViewModel.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAgwBUAAAA+AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-11T04:57:49.705Z",
+              "WhenOpened": "2024-07-11T05:11:32.198Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\App.xaml",
+              "RelativeDocumentMoniker": "LDRA_Parser\\App.xaml",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\App.xaml",
+              "RelativeToolTip": "LDRA_Parser\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-11T07:07:58.358Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "LDRA_Parser",
+              "DocumentMoniker": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\LDRA_Parser.csproj",
+              "RelativeDocumentMoniker": "LDRA_Parser\\LDRA_Parser.csproj",
+              "ToolTip": "C:\\moa\\LDRA_Parser\\LDRA_Parser\\LDRA_Parser.csproj",
+              "RelativeToolTip": "LDRA_Parser\\LDRA_Parser.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-07-11T05:46:06.221Z",
               "EditorCaption": ""
             }
           ]

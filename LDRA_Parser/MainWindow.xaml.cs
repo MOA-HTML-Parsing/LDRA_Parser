@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using LDRA_Parser.ViewModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +17,24 @@ namespace LDRA_Parser
     /// </summary>
     public partial class MainWindow : Window
     {
+        private FileSystemViewModel _viewModel;
+
         public MainWindow()
         {
             InitializeComponent();
+            _viewModel = DataContext as FileSystemViewModel;
+        }
+
+        private void OnLoadFilesClicked(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel != null)
+            {
+                _viewModel.LoadDrives();
+            }
+            else
+            {
+                MessageBox.Show("ViewModel is not set.");
+            }
         }
     }
 }
