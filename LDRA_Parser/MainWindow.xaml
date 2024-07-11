@@ -17,9 +17,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button Content="Load Files" Click="OnLoadFilesClicked" Margin="10" />
+        <Button Content="Load Files" Click="OnLoadFilesClicked" Margin="85,71,1162,882" Grid.Row="1" />
 
-        <TreeView ItemsSource="{Binding Items}" Grid.Row="1">
+        <TreeView ItemsSource="{Binding Items}" Grid.Row="1" Margin="85,166,1162,593">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
                     <TextBlock Text="{Binding Name}" />
