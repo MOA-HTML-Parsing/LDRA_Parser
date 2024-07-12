@@ -3,26 +3,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-
-        xmlns:local="clr-namespace:LDRA_Parser.ViewModel"
+        xmlns:viewModel="clr-namespace:LDRA_Parser.ViewModel"
         xmlns:local_2="clr-namespace:LDRA_Parser.Model"
         mc:Ignorable="d"
         Title="MainWindow" Height="1024" Width="1440">
     <Window.DataContext>
-        <local:FileSystemViewModel/>
-       <viewModel:MainViewModel/>
+        <viewModel:FileSystemViewModel/>
     </Window.DataContext>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-<Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
-        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True"/>
-        <Button Content="Load Files" Click="OnLoadFilesClicked" Margin="85,71,1162,882" Grid.Row="1" />
+        <StackPanel Height="596" VerticalAlignment="Bottom" Margin="860,0,0,402">
+            <StackPanel.DataContext>
+                <viewModel:MainViewModel/>
+            </StackPanel.DataContext>
+            <Button Content="Upload HTML" Width="100" Height="30" Command="{Binding UploadCommand}"/>
+            <TextBox Text="{Binding HtmlContent}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Height="276" Width="258"/>
+        </StackPanel>
 
-        <TreeView ItemsSource="{Binding Items}" Grid.Row="1" Margin="85,166,1162,593">
+
+        <Button Content="Load Files" Click="OnLoadFilesClicked" Margin="10,24,1296,938" />
+        <TreeView ItemsSource="{Binding Items}" Margin="10,88,1296,717">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
                     <TextBlock Text="{Binding Name}" />
@@ -30,5 +30,8 @@
             </TreeView.Resources>
         </TreeView>
 
+
     </Grid>
+
+
 </Window>

@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HtmlAgilityPack;
-using LDRA_Parser.ViewModel;
 
 namespace LDRA_Parser
 {
@@ -28,7 +27,7 @@ namespace LDRA_Parser
         public MainWindow()
         {
             InitializeComponent();
-             DataContext = new MainViewModel();
+             DataContext = new FileSystemViewModel();
 
             _viewModel = DataContext as FileSystemViewModel;
         }
