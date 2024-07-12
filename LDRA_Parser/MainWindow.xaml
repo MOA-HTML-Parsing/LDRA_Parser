@@ -18,9 +18,22 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-<Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
-        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True"/>
-     
+        <Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
+        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Width="300" Height="600" TextChanged="TextBox_TextChanged"/>
+
+        <ListView ItemsSource="{Binding BeforeViewList}" Margin="340,44,437,8">
+            <ListView.DataContext>
+                <local:BeforeViewModel/>
+            </ListView.DataContext>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Number of Violations" DisplayMemberBinding="{Binding Number_of_Violations}" Width="165"/>
+                    <GridViewColumn Header="LDRA Code" DisplayMemberBinding="{Binding LDRA_Code}" Width="110"/>
+                    <GridViewColumn Header="Rule Standards" DisplayMemberBinding="{Binding Rule_Standards}" Width="180"/>
+                    <GridViewColumn Header="MISRA-C:2004 Code" DisplayMemberBinding="{Binding MISRA_Code}" Width="200"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 </Window>

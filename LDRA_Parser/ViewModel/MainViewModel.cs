@@ -37,7 +37,7 @@ namespace LDRA_Parser.ViewModel
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "HTML files (*.html)|*.html|All files (*.*)|*.*"
+                Filter = "HTML files (*.htm)|*.html|All files (*.*)|*.*"
             };
             if (openFileDialog.ShowDialog() == true)
             {
