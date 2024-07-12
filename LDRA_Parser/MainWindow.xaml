@@ -18,8 +18,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-<Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
-        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True"/>
+        <Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
+        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Width="1000" Height="600"/>
      
 
     </Grid>
