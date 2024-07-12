@@ -8,10 +8,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1024" Width="1440">
     <Window.DataContext>
+
         <viewModel:FileSystemViewModel/>
+
     </Window.DataContext>
 
+
     <Grid>
+
         <StackPanel Height="596" VerticalAlignment="Bottom" Margin="860,0,0,402">
             <StackPanel.DataContext>
                 <viewModel:MainViewModel/>
@@ -29,6 +33,7 @@
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
+
 
 
     </Grid>
