@@ -9,9 +9,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1024" Width="1440">
     <Window.DataContext>
-        <local:FileSystemViewModel/>
-       <viewModel:MainViewModel/>
+        <local:MainViewModel/>
     </Window.DataContext>
+
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,15 +20,7 @@
         </Grid.RowDefinitions>
 <Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
         <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True"/>
-        <Button Content="Load Files" Click="OnLoadFilesClicked" Margin="85,71,1162,882" Grid.Row="1" />
-
-        <TreeView ItemsSource="{Binding Items}" Grid.Row="1" Margin="85,166,1162,593">
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name}" />
-                </HierarchicalDataTemplate>
-            </TreeView.Resources>
-        </TreeView>
+     
 
     </Grid>
 </Window>
