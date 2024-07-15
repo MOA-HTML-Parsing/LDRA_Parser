@@ -51,7 +51,7 @@ namespace LDRA_Parser
 
         }
 
-       
+
         private void TextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is TextBlock textBlock && textBlock.DataContext is FileSystemItem item)
@@ -65,6 +65,7 @@ namespace LDRA_Parser
             }
         }
 
-   
+
 
     }
+}
