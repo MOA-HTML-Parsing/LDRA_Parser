@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
-    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="Microsoft-Windows10-APICodePack-Shell" Version="1.1.8" />
   </ItemGroup>
 
 </Project>

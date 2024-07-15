@@ -11,24 +11,23 @@ using System.IO;
 
 namespace LDRA_Parser.ViewModel
 {
-    class BeforeViewModel : INotifyPropertyChanged
+    class AfterViewModel : INotifyPropertyChanged
     {
+        private ObservableCollection<AfterItem> _people;
 
-        private ObservableCollection<BeforeItem> item;
-
-        public ObservableCollection<BeforeItem> BeforeViewList
+        public ObservableCollection<AfterItem> AfterViewList
         {
-            get { return item; }
+            get { return _people; }
             set
             {
-                item = value;
+                _people = value;
                 OnPropertyChanged("BeforeViewList");
             }
         }
 
-        public BeforeViewModel()
+        public AfterViewModel()
         {
-            BeforeViewList = new ObservableCollection<BeforeItem>();
+            AfterViewList = new ObservableCollection<AfterItem>();
         }
 
         public void LoadHtmlContent(string filePath)
@@ -53,13 +52,13 @@ namespace LDRA_Parser.ViewModel
                                 var cells = row.SelectNodes(".//td");
                                 if (cells != null && cells.Count == 4)
                                 {
-                                    BeforeItem item = new BeforeItem(
+                                    AfterItem item = new AfterItem(
                                         cells[0].InnerText.Trim(),
                                         cells[1].InnerText.Trim(),
                                         cells[2].InnerText.Trim(),
                                         cells[3].InnerText.Trim()
                                     );
-                                    BeforeViewList.Add(item);
+                                    AfterViewList.Add(item);
                                 }
                             }
                         }

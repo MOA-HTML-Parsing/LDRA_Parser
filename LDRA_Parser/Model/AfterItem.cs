@@ -1,20 +1,19 @@
-
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-﻿namespace LDRA_Parser.Model
+namespace LDRA_Parser.Model
 {
-    class BeforeItem
+    class AfterItem
     {
-        public string Number_of_Violations { get; set; }    
+        public string Number_of_Violations { get; set; }
         public string LDRA_Code { get; set; }
         public string Rule_Standards { get; set; }
         public string MISRA_Code { get; set; }
 
-        public BeforeItem(string violations, string code, string standards, string misraCode)
+        public AfterItem(string violations, string code, string standards, string misraCode)
         {
             Number_of_Violations = violations;
             LDRA_Code = code;
