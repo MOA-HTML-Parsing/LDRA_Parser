@@ -11,7 +11,7 @@ using System.IO;
 
 namespace LDRA_Parser.ViewModel
 {
-    class BeforeViewModel : INotifyPropertyChanged
+    public class BeforeViewModel : INotifyPropertyChanged
     {
 
         private ObservableCollection<BeforeItem> item;
@@ -53,19 +53,32 @@ namespace LDRA_Parser.ViewModel
                                 var cells = row.SelectNodes(".//td");
                                 if (cells != null && cells.Count == 4)
                                 {
-                                    BeforeItem item = new BeforeItem(
-                                        cells[0].InnerText.Trim(),
-                                        cells[1].InnerText.Trim(),
-                                        cells[2].InnerText.Trim(),
-                                        cells[3].InnerText.Trim()
-                                    );
-                                    BeforeViewList.Add(item);
+                                    var scriptNode = cells[2].SelectSingleNode(".//script");
+                                    if (scriptNode != null)
+                                    {
+                                        string scriptContent = scriptNode.InnerText;
+                                        int startIndex = scriptContent.IndexOf("document.write('") + "document.write('".Length;
+                                        int endIndex = scriptContent.LastIndexOf("')");
+                                        if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex)
+                                        {
+                                            string extractedText = scriptContent.Substring(startIndex, endIndex - startIndex);
+                                            extractedText = extractedText.Replace("\\'", "'").Replace("\\x", "&#x");
+                                            BeforeItem item = new BeforeItem(
+                                                cells[0].InnerText.Trim(),
+                                                cells[1].InnerText.Trim(),
+                                                extractedText.Trim(),
+                                                cells[3].InnerText.Trim()
+                                            );
+                                            BeforeViewList.Add(item);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+            OnPropertyChanged("BeforeViewList");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

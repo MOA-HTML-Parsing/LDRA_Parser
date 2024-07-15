@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace LDRA_Parser.ViewModel
 {
-    class AfterViewModel : INotifyPropertyChanged
+    public class AfterViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<AfterItem> _people;
 
