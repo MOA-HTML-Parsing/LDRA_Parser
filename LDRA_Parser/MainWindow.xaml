@@ -12,7 +12,7 @@
         <viewModel:FileSystemViewModel/>
 
     </Window.DataContext>
-    <Grid>
+    <Grid Height="884" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="650"/>
             <RowDefinition Height="250*"/>
@@ -20,11 +20,12 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200*"/>
             <ColumnDefinition Width="620*"/>
-            <ColumnDefinition Width="620*"/>
+            <ColumnDefinition Width="421*"/>
+            <ColumnDefinition Width="199*"/>
         </Grid.ColumnDefinitions>
 
         <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,15,0" 
-                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0"/>
+                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0" Height="43"/>
 
         <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,0" Grid.RowSpan="2">
 
@@ -35,9 +36,9 @@
             </TreeView.Resources>
         </TreeView>
 
-        <Rectangle  Fill="#40000000" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2,0,0,0" Grid.Column="1"/>
+        <Rectangle  Fill="#40000000" HorizontalAlignment="Left" Margin="2,0,0,0" Grid.Column="1" Width="0"/>
 
-        <ListView Grid.Column="1" ItemsSource="{Binding BeforeVM.BeforeViewList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15,100,15,10">
+        <ListView x:Name="BeforeList" Grid.Column="1" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
@@ -48,7 +49,7 @@
             </ListView.View>
         </ListView>
 
-        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15,100,15,10" Grid.Column="2">
+        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2">
 
             <ListView.View>
                 <GridView>
@@ -61,7 +62,17 @@
         </ListView>
         <Label Content="BEFORE" HorizontalAlignment="Left" Height="55" Margin="44,31,0,0" VerticalAlignment="Top" Width="109" Grid.Column="1"/>
         <Label Content="AFTER" HorizontalAlignment="Left" Height="24" Margin="32,44,0,0" VerticalAlignment="Top" Width="112" Grid.Column="2"/>
+        <Button  Content="Save" Width="Auto" VerticalAlignment="Top" Margin="13,90,15,90" Grid.Column="3" Grid.Row="1" Click="Button_Click"/>
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="20,10,45,10" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
+
+        
     </Grid>
 
 
