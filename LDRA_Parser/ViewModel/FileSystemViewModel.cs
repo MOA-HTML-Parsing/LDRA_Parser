@@ -7,11 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using LDRA_Parser.Model;
 using System.ComponentModel;
-using System.Printing.IndexedProperties;
-using System.Windows.Threading;
+
 using System.Windows;
 using Microsoft.Win32;
-using System.Net.Http;
+using Microsoft.WindowsAPICodePack.Dialogs;
+
+
 
 namespace LDRA_Parser.ViewModel
 {
@@ -71,23 +72,28 @@ namespace LDRA_Parser.ViewModel
             SelectedItem = new FileSystemItem();
             BeforeVM = new BeforeViewModel();
             AfterVM = new AfterViewModel();
+
         }
+
 
         public void LoadDrives()
         {
             Items.Clear();
-            foreach (var drive in DriveInfo.GetDrives())
+            CommonOpenFileDialog cofd = new CommonOpenFileDialog(); 
+            cofd.IsFolderPicker = true; 
+            if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 var driveItem = new FileSystemItem
                 {
-                    Name = drive.Name,
-                    FullPath = drive.Name,
+                    Name = cofd.FileName,
+                    FullPath = cofd.FileName,
                     IsDirectory = true
                 };
-
                 LoadChildren(driveItem);
                 Items.Add(driveItem);
             }
+
+             
         }
 
         private async void LoadChildren(FileSystemItem item)
