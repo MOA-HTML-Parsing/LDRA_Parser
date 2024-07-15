@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using LDRA_Parser.Model;
 using System.ComponentModel;
-using System.Printing.IndexedProperties;
-using System.Windows.Threading;
+
 using System.Windows;
 using Microsoft.Win32;
-using System.Net.Http;
+using Microsoft.WindowsAPICodePack.Dialogs;
+
+
 
 namespace LDRA_Parser.ViewModel
 {
     public class FileSystemViewModel : INotifyPropertyChanged
     {
-
-
         private FileSystemItem _selectedItem;
 
         public FileSystemItem SelectedItem
@@ -53,10 +51,6 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-        /// <summary>
-
-        /// </summary>
-
         private ObservableCollection<FileSystemItem> _items;
 
         public ObservableCollection<FileSystemItem> Items
@@ -69,30 +63,37 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
+        public BeforeViewModel BeforeVM { get; private set; }
+        public AfterViewModel AfterVM { get; private set; }
+
         public FileSystemViewModel()
         {
             Items = new ObservableCollection<FileSystemItem>();
             SelectedItem = new FileSystemItem();
+            BeforeVM = new BeforeViewModel();
+            AfterVM = new AfterViewModel();
+
         }
+
 
         public void LoadDrives()
         {
-          
-                Items.Clear();
-                foreach (var drive in DriveInfo.GetDrives())
+            Items.Clear();
+            CommonOpenFileDialog cofd = new CommonOpenFileDialog(); 
+            cofd.IsFolderPicker = true; 
+            if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var driveItem = new FileSystemItem
                 {
-                    var driveItem = new FileSystemItem
-                    {
-                        Name = drive.Name,
-                        FullPath = drive.Name,
-                        IsDirectory = true
-                    };
+                    Name = cofd.FileName,
+                    FullPath = cofd.FileName,
+                    IsDirectory = true
+                };
+                LoadChildren(driveItem);
+                Items.Add(driveItem);
+            }
 
-                    LoadChildren(driveItem);
-                    Items.Add(driveItem);
-                }
-            
-           
+             
         }
 
         private async void LoadChildren(FileSystemItem item)
@@ -150,7 +151,6 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-
         private void LogToFile(string message)
         {
             string logFilePath = "error_log.txt";
@@ -184,18 +184,16 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-
         public event PropertyChangedEventHandler PropertyChanged;
-
 
         public void htmlView(FileSystemItem item)
         {
-  
             if (item != null && File.Exists(item.FullPath))
             {
                 OpenHtmlFile(item.FullPath);
             }
         }
+
         private void OpenHtmlFile(string filePath)
         {
             // Logic to open the HTML file
@@ -205,15 +203,15 @@ namespace LDRA_Parser.ViewModel
             if (filePath.Contains(@"\Before\"))
             {
                 HtmlContent = fileContent;
+                BeforeVM.LoadHtmlContent(filePath);
             }
             else if (filePath.Contains(@"\After\"))
             {
                 HtmlContent2 = fileContent;
+                AfterVM.LoadHtmlContent(filePath);
             }
-            
         }
 
-  
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

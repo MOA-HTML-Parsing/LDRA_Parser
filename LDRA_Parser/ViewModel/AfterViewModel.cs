@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace LDRA_Parser.ViewModel
 {
-    class AfterViewModel : INotifyPropertyChanged
+    public class AfterViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<AfterItem> _people;
 
@@ -47,25 +47,21 @@ namespace LDRA_Parser.ViewModel
                                 var cells = row.SelectNodes(".//td");
                                 if (cells != null && cells.Count == 4)
                                 {
-                                    var scriptNode = cells[2].SelectSingleNode(".//script");
-                                    if (scriptNode != null)
+                                    string extractedText2 = ExtractTextFromScript(cells[2]);
+                                    string extractedText3 = ExtractTextFromScript(cells[3]);
+
+                                    if (extractedText3 == "&nbsp;")
                                     {
-                                        string scriptContent = scriptNode.InnerText;
-                                        int startIndex = scriptContent.IndexOf("document.write('") + "document.write('".Length;
-                                        int endIndex = scriptContent.LastIndexOf("')");
-                                        if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex)
-                                        {
-                                            string extractedText = scriptContent.Substring(startIndex, endIndex - startIndex);
-                                            extractedText = extractedText.Replace("\\'", "'").Replace("\\x", "&#x");
-                                            AfterItem item = new AfterItem(
-                                                cells[0].InnerText.Trim(),
-                                                cells[1].InnerText.Trim(),
-                                                extractedText.Trim(),
-                                                cells[3].InnerText.Trim()
-                                            );
-                                            AfterViewList.Add(item);
-                                        }
+                                        extractedText3 = null;
                                     }
+
+                                    AfterItem item = new AfterItem(
+                                        cells[0].InnerText.Trim(),
+                                        cells[1].InnerText.Trim(),
+                                        extractedText2.Trim(),
+                                        extractedText3?.Trim()
+                                    );
+                                    AfterViewList.Add(item);
                                 }
                             }
                         }
@@ -73,6 +69,45 @@ namespace LDRA_Parser.ViewModel
                 }
             }
             OnPropertyChanged("AfterViewList");
+        }
+
+        private string ExtractTextFromScript(HtmlNode cell)
+        {
+            var scriptNodes = cell.SelectNodes(".//script");
+            if (scriptNodes != null)
+            {
+                foreach (var scriptNode in scriptNodes)
+                {
+                    string scriptContent = scriptNode.InnerText;
+
+                    int startIndex = scriptContent.IndexOf("document.write('") + "document.write('".Length;
+                    int endIndex = scriptContent.LastIndexOf("')");
+                    if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex)
+                    {
+                        string extractedText = scriptContent.Substring(startIndex, endIndex - startIndex);
+                        extractedText = extractedText.Replace("\\'", "'").Replace("\\x", "&#x");
+
+                        int lastQuoteIndex = extractedText.LastIndexOf("')");
+                        if (lastQuoteIndex >= 0)
+                        {
+                            extractedText = extractedText.Substring(0, lastQuoteIndex);
+                        }
+
+                        int anchorIndex = extractedText.IndexOf("</a>");
+                        if (anchorIndex >= 0)
+                        {
+                            int documentWriteIndex = extractedText.IndexOf("document.write('") + "document.write('".Length;
+                            if (documentWriteIndex >= 0 && documentWriteIndex < anchorIndex)
+                            {
+                                extractedText = extractedText.Substring(documentWriteIndex, anchorIndex - documentWriteIndex);
+                            }
+                        }
+
+                        return extractedText.Trim();
+                    }
+                }
+            }
+            return cell.InnerText.Trim();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

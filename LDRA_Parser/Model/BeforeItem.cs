@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 ﻿namespace LDRA_Parser.Model
 {
-    class BeforeItem
+    public class BeforeItem
     {
         public string Number_of_Violations { get; set; }    
         public string LDRA_Code { get; set; }
