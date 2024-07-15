@@ -79,6 +79,7 @@ namespace LDRA_Parser.ViewModel
                 foreach (var scriptNode in scriptNodes)
                 {
                     string scriptContent = scriptNode.InnerText;
+
                     int startIndex = scriptContent.IndexOf("document.write('") + "document.write('".Length;
                     int endIndex = scriptContent.LastIndexOf("')");
                     if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex)
@@ -86,14 +87,23 @@ namespace LDRA_Parser.ViewModel
                         string extractedText = scriptContent.Substring(startIndex, endIndex - startIndex);
                         extractedText = extractedText.Replace("\\'", "'").Replace("\\x", "&#x");
 
-                        var mainContentStart = extractedText.IndexOf(">") + 1;
-                        var mainContentEnd = extractedText.LastIndexOf("</a>");
-                        if (mainContentStart >= 0 && mainContentEnd >= 0 && mainContentEnd > mainContentStart)
+                        int lastQuoteIndex = extractedText.LastIndexOf("')");
+                        if (lastQuoteIndex >= 0)
                         {
-                            extractedText = extractedText.Substring(mainContentStart, mainContentEnd - mainContentStart);
+                            extractedText = extractedText.Substring(0, lastQuoteIndex);
                         }
 
-                        return extractedText;
+                        int anchorIndex = extractedText.IndexOf("</a>");
+                        if (anchorIndex >= 0)
+                        {
+                            int documentWriteIndex = extractedText.IndexOf("document.write('") + "document.write('".Length;
+                            if (documentWriteIndex >= 0 && documentWriteIndex < anchorIndex)
+                            {
+                                extractedText = extractedText.Substring(documentWriteIndex, anchorIndex - documentWriteIndex);
+                            }
+                        }
+
+                        return extractedText.Trim();
                     }
                 }
             }
