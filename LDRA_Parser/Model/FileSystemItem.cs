@@ -18,5 +18,7 @@ namespace LDRA_Parser.Model
         {
             Children = new ObservableCollection<FileSystemItem>();
         }
+
+  
     }
 }
