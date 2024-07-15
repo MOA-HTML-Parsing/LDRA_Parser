@@ -23,14 +23,21 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-        public ICommand UploadCommand { get; }
+        public ICommand UploadBeforeCommand { get; }
+        public ICommand UploadAfterCommand { get; }
+        public BeforeViewModel BeforeVM { get; }
+
+        public AfterViewModel AfterVM { get; }
 
         public MainViewModel()
         {
-            UploadCommand = new RelayCommand(UploadHtml);
+            UploadBeforeCommand = new RelayCommand(UploadBeforeHtml);
+            UploadAfterCommand = new RelayCommand(UploadAfterHtml);
+            BeforeVM = new BeforeViewModel();
+            AfterVM = new AfterViewModel();
         }
 
-        private void UploadHtml()
+        private void UploadBeforeHtml()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -39,62 +46,25 @@ namespace LDRA_Parser.ViewModel
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
-                string htmlContent = File.ReadAllText(filePath);
-                ParseHtml(htmlContent);
+                BeforeVM.LoadHtmlContent(filePath);
             }
         }
-            
-        private void ParseHtml(string htmlContent)
+
+        private void UploadAfterHtml()
         {
-            HtmlDocument htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(htmlContent);
-
-            var tables = htmlDocument.DocumentNode.SelectNodes("//table");
-
-            if (tables != null)
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                StringBuilder sb = new StringBuilder();
-
-                foreach (var table in tables)
-                {
-                    var thNodes = table.SelectNodes(".//tr/th");
-                    if (thNodes != null && thNodes.Count == 4)
-                    {
-                        var rows = table.SelectNodes(".//tr");
-                        if (rows != null)
-                        {
-                            foreach (var row in rows)
-                            {
-                                var cells = row.SelectNodes(".//td");
-                                if (cells != null)
-                                {
-                                    foreach (var cell in cells)
-                                    {
-                                        sb.AppendLine($"Text: {cell.InnerText.Trim()}");
-                                    }
-                                    sb.AppendLine();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (sb.Length > 0)
-                {
-                    HtmlContent = sb.ToString();
-                }
-                else
-                {
-                    HtmlContent = "No tables found with exactly 4 <th> elements.";
-                }
-            }
-            else
+                Filter = "HTML files (*.htm)|*.htm|All files (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
             {
-                HtmlContent = "No <table> tags found.";
+                string filePath = openFileDialog.FileName;
+                AfterVM.LoadHtmlContent(filePath);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

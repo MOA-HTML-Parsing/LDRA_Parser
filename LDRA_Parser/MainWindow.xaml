@@ -3,24 +3,45 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-
         xmlns:local="clr-namespace:LDRA_Parser.ViewModel"
-        xmlns:local_2="clr-namespace:LDRA_Parser.Model"
         mc:Ignorable="d"
         Title="MainWindow" Height="1024" Width="1440">
     <Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>
-
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
-        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Width="1000" Height="600"/>
-     
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Button Content="Upload Before HTML" Width="150" Height="30" Command="{Binding UploadBeforeCommand}" Margin="10"/>
+            <Button Content="Upload After HTML" Width="150" Height="30" Command="{Binding UploadAfterCommand}" Margin="10"/>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" Margin="10,0,10,10">
+            <StackPanel Orientation="Horizontal">
+                <ListView ItemsSource="{Binding BeforeVM.BeforeViewList}" Width="650" Height="600" Margin="60,0,0,150">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Number of Violations" DisplayMemberBinding="{Binding Number_of_Violations}" Width="165"/>
+                            <GridViewColumn Header="LDRA Code" DisplayMemberBinding="{Binding LDRA_Code}" Width="110"/>
+                            <GridViewColumn Header="Rule Standards" DisplayMemberBinding="{Binding Rule_Standards}" Width="180"/>
+                            <GridViewColumn Header="MISRA-C:2004 Code" DisplayMemberBinding="{Binding MISRA_Code}" Width="200"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
 
+                <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Width="650" Height="600" Margin="20,0,0,150">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Number of Violations" DisplayMemberBinding="{Binding Number_of_Violations}" Width="165"/>
+                            <GridViewColumn Header="LDRA Code" DisplayMemberBinding="{Binding LDRA_Code}" Width="110"/>
+                            <GridViewColumn Header="Rule Standards" DisplayMemberBinding="{Binding Rule_Standards}" Width="180"/>
+                            <GridViewColumn Header="MISRA-C:2004 Code" DisplayMemberBinding="{Binding MISRA_Code}" Width="200"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
