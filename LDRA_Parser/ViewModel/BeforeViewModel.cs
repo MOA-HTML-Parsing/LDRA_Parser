@@ -12,14 +12,14 @@ namespace LDRA_Parser.ViewModel
     class BeforeViewModel : INotifyPropertyChanged
     {
 
-        private ObservableCollection<BeforeItem> _people;
+        private ObservableCollection<BeforeItem> item;
 
         public ObservableCollection<BeforeItem> BeforeViewList
         {
-            get { return _people; }
+            get { return item; }
             set
             {
-                _people = value;
+                item = value;
                 OnPropertyChanged("BeforeViewList");
             }
         }

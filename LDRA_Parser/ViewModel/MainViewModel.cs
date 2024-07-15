@@ -37,29 +37,58 @@ namespace LDRA_Parser.ViewModel
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "HTML files (*.htm)|*.html|All files (*.*)|*.*"
+                Filter = "HTML files (*.htm)|*.htm|All files (*.*)|*.*"
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
                 string htmlContent = File.ReadAllText(filePath);
                 ParseHtml(htmlContent);
+                
             }
         }
-
         private void ParseHtml(string htmlContent)
         {
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(htmlContent);
 
-            var paragraphs = htmlDocument.DocumentNode.SelectNodes("//table");
-            HtmlContent = "";
+            var tables = htmlDocument.DocumentNode.SelectNodes("//table");
 
-            if (paragraphs != null)
+            if (tables != null)
             {
-                foreach (var paragraph in paragraphs)
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var table in tables)
                 {
-                    HtmlContent += paragraph.InnerText + Environment.NewLine;
+                    var thNodes = table.SelectNodes(".//tr/th");
+                    if (thNodes != null && thNodes.Count == 4 && thNodes[0].InnerText.Contains("Number of Violations"))
+                    {
+                        var rows = table.SelectNodes(".//tr");
+                        if (rows != null)
+                        {
+                            foreach (var row in rows)
+                            {
+                                var cells = row.SelectNodes(".//td");
+                                if (cells != null)
+                                {
+                                    foreach (var cell in cells)
+                                    {
+                                        sb.AppendLine($"Text: {cell.InnerText.Trim()}");
+                                    }
+                                    sb.AppendLine();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (sb.Length > 0)
+                {
+                    HtmlContent = sb.ToString();
+                }
+                else
+                {
+                    HtmlContent = "No tables found with exactly 4 <th> elements.";
                 }
             }
             else
