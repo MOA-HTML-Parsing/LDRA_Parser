@@ -27,6 +27,7 @@
                 VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0"/>
 
         <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,0" Grid.RowSpan="2">
+
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
                     <TextBlock x:Name="input_textblock" MouseRightButtonDown="TextBlock_MouseRightButtonDown" Text="{Binding Name}" />
@@ -48,6 +49,7 @@
         </ListView>
 
         <ListView ItemsSource="{Binding AfterVM.AfterViewList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15,100,15,10" Grid.Column="2">
+
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
