@@ -14,7 +14,7 @@
     </Window.DataContext>
     <Grid>
         <Button Content="Load Files" Click="OnLoadFilesClicked" HorizontalAlignment="Left" Height="24" Margin="20,46,0,0" VerticalAlignment="Top" Width="150"/>
-        <TreeView ItemsSource="{Binding Items}" Width="150" Height="374.96" Margin="18,95,1272,538">
+        <TreeView ItemsSource="{Binding Items}" Width="150" Margin="18,95,1272,80">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
                     <TextBlock x:Name="input_textblock" MouseRightButtonDown="TextBlock_MouseRightButtonDown" Text="{Binding Name}" />
@@ -22,7 +22,7 @@
             </TreeView.Resources>
         </TreeView>
 
-        <ListView Grid.Column="0" ItemsSource="{Binding BeforeVM.BeforeViewList}" Width="599" Height="600" Margin="196,96,645,312">
+        <ListView Grid.Column="0" ItemsSource="{Binding BeforeVM.BeforeViewList}" Width="599" Margin="196,90,645,80">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
@@ -33,7 +33,7 @@
             </ListView.View>
         </ListView>
 
-        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Height="600" Width="600" Margin="828,90,12,318">
+        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Width="600" Margin="828,90,12,80">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>

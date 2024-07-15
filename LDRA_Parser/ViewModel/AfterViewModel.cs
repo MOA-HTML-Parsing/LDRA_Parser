@@ -47,25 +47,21 @@ namespace LDRA_Parser.ViewModel
                                 var cells = row.SelectNodes(".//td");
                                 if (cells != null && cells.Count == 4)
                                 {
-                                    var scriptNode = cells[2].SelectSingleNode(".//script");
-                                    if (scriptNode != null)
+                                    string extractedText2 = ExtractTextFromScript(cells[2]);
+                                    string extractedText3 = ExtractTextFromScript(cells[3]);
+
+                                    if (extractedText3 == "&nbsp;")
                                     {
-                                        string scriptContent = scriptNode.InnerText;
-                                        int startIndex = scriptContent.IndexOf("document.write('") + "document.write('".Length;
-                                        int endIndex = scriptContent.LastIndexOf("')");
-                                        if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex)
-                                        {
-                                            string extractedText = scriptContent.Substring(startIndex, endIndex - startIndex);
-                                            extractedText = extractedText.Replace("\\'", "'").Replace("\\x", "&#x");
-                                            AfterItem item = new AfterItem(
-                                                cells[0].InnerText.Trim(),
-                                                cells[1].InnerText.Trim(),
-                                                extractedText.Trim(),
-                                                cells[3].InnerText.Trim()
-                                            );
-                                            AfterViewList.Add(item);
-                                        }
+                                        extractedText3 = null;
                                     }
+
+                                    AfterItem item = new AfterItem(
+                                        cells[0].InnerText.Trim(),
+                                        cells[1].InnerText.Trim(),
+                                        extractedText2.Trim(),
+                                        extractedText3?.Trim()
+                                    );
+                                    AfterViewList.Add(item);
                                 }
                             }
                         }
@@ -73,6 +69,36 @@ namespace LDRA_Parser.ViewModel
                 }
             }
             OnPropertyChanged("AfterViewList");
+        }
+
+        private string ExtractTextFromScript(HtmlNode cell)
+        {
+            var scriptNodes = cell.SelectNodes(".//script");
+            if (scriptNodes != null)
+            {
+                foreach (var scriptNode in scriptNodes)
+                {
+                    string scriptContent = scriptNode.InnerText;
+                    int startIndex = scriptContent.IndexOf("document.write('") + "document.write('".Length;
+                    int endIndex = scriptContent.LastIndexOf("')");
+                    if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex)
+                    {
+                        string extractedText = scriptContent.Substring(startIndex, endIndex - startIndex);
+                        extractedText = extractedText.Replace("\\'", "'").Replace("\\x", "&#x");
+
+                        // Extract the main content from the document.write calls
+                        var mainContentStart = extractedText.IndexOf(">") + 1;
+                        var mainContentEnd = extractedText.LastIndexOf("</a>");
+                        if (mainContentStart >= 0 && mainContentEnd >= 0 && mainContentEnd > mainContentStart)
+                        {
+                            extractedText = extractedText.Substring(mainContentStart, mainContentEnd - mainContentStart);
+                        }
+
+                        return extractedText;
+                    }
+                }
+            }
+            return cell.InnerText.Trim();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
