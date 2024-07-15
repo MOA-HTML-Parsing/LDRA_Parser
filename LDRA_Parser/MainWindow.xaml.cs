@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HtmlAgilityPack;
+using LDRA_Parser.Model;
 
 namespace LDRA_Parser
 {
@@ -27,7 +28,7 @@ namespace LDRA_Parser
         public MainWindow()
         {
             InitializeComponent();
-             DataContext = new FileSystemViewModel();
+            DataContext = new FileSystemViewModel();
 
             _viewModel = DataContext as FileSystemViewModel;
         }
@@ -44,5 +45,20 @@ namespace LDRA_Parser
             }
 
         }
+       
+        private void TextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBlock textBlock && textBlock.DataContext is FileSystemItem item)
+            {
+                Console.WriteLine("bbbbbbb");
+                _viewModel.htmlView(item);
+            }
+            else
+            {
+                MessageBox.Show("ViewModel is not set.");
+            }
+        }
+
+   
     }
 }
