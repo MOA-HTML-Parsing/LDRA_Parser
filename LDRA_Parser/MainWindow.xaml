@@ -14,7 +14,7 @@
     </Window.DataContext>
     <Grid>
         <Button Content="Load Files" Click="OnLoadFilesClicked" HorizontalAlignment="Left" Height="24" Margin="20,46,0,0" VerticalAlignment="Top" Width="150"/>
-        <TreeView ItemsSource="{Binding Items}" Width="150" Margin="18,95,1272,80">
+        <TreeView ItemsSource="{Binding Items}" Width="150" Margin="18,90,1272,80">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
                     <TextBlock x:Name="input_textblock" MouseRightButtonDown="TextBlock_MouseRightButtonDown" Text="{Binding Name}" />
