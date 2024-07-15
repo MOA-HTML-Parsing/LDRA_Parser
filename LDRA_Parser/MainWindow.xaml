@@ -15,24 +15,34 @@
 
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="347*"/>
+            <ColumnDefinition Width="1093*"/>
+        </Grid.ColumnDefinitions>
 
-        <StackPanel Height="596" VerticalAlignment="Bottom" Margin="860,0,0,402">
+        <StackPanel Height="596" VerticalAlignment="Bottom" Margin="542,0,0,402" Grid.Column="1">
             <StackPanel.DataContext>
                 <viewModel:MainViewModel/>
             </StackPanel.DataContext>
             <Button Content="Upload HTML" Width="100" Height="30" Command="{Binding UploadCommand}"/>
-            <TextBox Text="{Binding HtmlContent}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Height="276" Width="258"/>
+            <TextBox Text="{Binding HtmlContent}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Height="548" Width="532"/>
         </StackPanel>
 
 
-        <Button Content="Load Files" Click="OnLoadFilesClicked" Margin="10,24,1296,938" />
-        <TreeView ItemsSource="{Binding Items}" Margin="10,88,1296,717">
+        <Button Content="Load Files" Click="OnLoadFilesClicked" Margin="10,24,174,938" />
+        <TreeView ItemsSource="{Binding Items}"  Margin="10,88,174,519">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name}" />
+                    <TextBlock x:Name="input_textblock" MouseRightButtonDown="TextBlock_MouseRightButtonDown" Text="{Binding Name}" />
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
+
+
+        <TextBox  Text="{Binding HtmlContent}" HorizontalAlignment="Left" Margin="227,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="277" Height="385" Grid.ColumnSpan="2"/>
+        <Label Content="BEFORE" HorizontalAlignment="Left" Height="22" Margin="261,48,0,0" VerticalAlignment="Top" Width="119" Grid.ColumnSpan="2"/>
+        <TextBox  Text="{Binding HtmlContent2}" HorizontalAlignment="Left" Margin="202,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="277" Height="385" Grid.Column="1"/>
+        <Label Content="AFTER" HorizontalAlignment="Left" Height="22" Margin="202,48,0,0" VerticalAlignment="Top" Width="119" Grid.Column="1"/>
 
 
 
@@ -40,3 +50,8 @@
 
 
 </Window>
+    
+    
+    
+
+    

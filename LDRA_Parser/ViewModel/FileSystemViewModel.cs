@@ -11,11 +11,52 @@ using System.ComponentModel;
 using System.Printing.IndexedProperties;
 using System.Windows.Threading;
 using System.Windows;
+using Microsoft.Win32;
+using System.Net.Http;
 
 namespace LDRA_Parser.ViewModel
 {
     public class FileSystemViewModel : INotifyPropertyChanged
     {
+
+
+        private FileSystemItem _selectedItem;
+
+        public FileSystemItem SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                OnPropertyChanged(nameof(SelectedItem));
+            }
+        }
+
+        private string _htmlContent;
+        public string HtmlContent
+        {
+            get { return _htmlContent; }
+            set
+            {
+                _htmlContent = value;
+                OnPropertyChanged(nameof(HtmlContent));
+            }
+        }
+        private string _htmlContent2;
+        public string HtmlContent2
+        {
+            get { return _htmlContent2; }
+            set
+            {
+                _htmlContent2 = value;
+                OnPropertyChanged(nameof(HtmlContent2));
+            }
+        }
+
+        /// <summary>
+
+        /// </summary>
+
         private ObservableCollection<FileSystemItem> _items;
 
         public ObservableCollection<FileSystemItem> Items
@@ -31,23 +72,27 @@ namespace LDRA_Parser.ViewModel
         public FileSystemViewModel()
         {
             Items = new ObservableCollection<FileSystemItem>();
+            SelectedItem = new FileSystemItem();
         }
 
         public void LoadDrives()
         {
-            Items.Clear();
-            foreach (var drive in DriveInfo.GetDrives())
-            {
-                var driveItem = new FileSystemItem
+          
+                Items.Clear();
+                foreach (var drive in DriveInfo.GetDrives())
                 {
-                    Name = drive.Name,
-                    FullPath = drive.Name,
-                    IsDirectory = true
-                };
+                    var driveItem = new FileSystemItem
+                    {
+                        Name = drive.Name,
+                        FullPath = drive.Name,
+                        IsDirectory = true
+                    };
 
-                LoadChildren(driveItem);
-                Items.Add(driveItem);
-            }
+                    LoadChildren(driveItem);
+                    Items.Add(driveItem);
+                }
+            
+           
         }
 
         private async void LoadChildren(FileSystemItem item)
@@ -100,14 +145,75 @@ namespace LDRA_Parser.ViewModel
             catch (Exception ex)
             {
                 // 예외 로그를 파일에 기록
-                string logFilePath = "error_log.txt";
                 string logMessage = $"Error loading children for {item.FullPath}: {ex.Message}\n";
-                File.AppendAllText(logFilePath, logMessage);
+                LogToFile(logMessage);
             }
         }
 
+
+        private void LogToFile(string message)
+        {
+            string logFilePath = "error_log.txt";
+            bool isLogged = false;
+            int retryCount = 3;
+            int retryDelay = 1000; // 1 second
+
+            for (int i = 0; i < retryCount && !isLogged; i++)
+            {
+                try
+                {
+                    using (FileStream fileStream = new FileStream(logFilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        using (StreamWriter writer = new StreamWriter(fileStream))
+                        {
+                            writer.WriteLine($"{DateTime.Now}: {message}");
+                        }
+                    }
+                    isLogged = true;
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine($"Attempt {i + 1} - Failed to write to log file: {ex.Message}");
+                    System.Threading.Thread.Sleep(retryDelay);
+                }
+            }
+
+            if (!isLogged)
+            {
+                Console.WriteLine("Failed to write to log file after multiple attempts.");
+            }
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
+
+        public void htmlView(FileSystemItem item)
+        {
+  
+            if (item != null && File.Exists(item.FullPath))
+            {
+                OpenHtmlFile(item.FullPath);
+            }
+        }
+        private void OpenHtmlFile(string filePath)
+        {
+            // Logic to open the HTML file
+            // For example, you could read the file content and bind it to a TextBox
+            string fileContent = File.ReadAllText(filePath);
+
+            if (filePath.Contains(@"\Before\"))
+            {
+                HtmlContent = fileContent;
+            }
+            else if (filePath.Contains(@"\After\"))
+            {
+                HtmlContent2 = fileContent;
+            }
+            
+        }
+
+  
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
