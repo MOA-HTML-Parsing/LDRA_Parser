@@ -1,15 +1,12 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.Win32;
 using System;
-using System.IO;
-using System.Windows.Input;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;   
-using System.Xml.Linq;
+using System.Windows.Input;
 
 namespace LDRA_Parser.ViewModel
 {
@@ -26,49 +23,48 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-        public ICommand UploadCommand { get; }
+        public ICommand UploadBeforeCommand { get; }
+        public ICommand UploadAfterCommand { get; }
+        public BeforeViewModel BeforeVM { get; }
+
+        public AfterViewModel AfterVM { get; }
 
         public MainViewModel()
         {
-            UploadCommand = new RelayCommand(UploadHtml);
+            UploadBeforeCommand = new RelayCommand(UploadBeforeHtml);
+            UploadAfterCommand = new RelayCommand(UploadAfterHtml);
+            BeforeVM = new BeforeViewModel();
+            AfterVM = new AfterViewModel();
         }
 
-        private void UploadHtml()
+        private void UploadBeforeHtml()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "HTML files (*.html)|*.html|All files (*.*)|*.*"
+                Filter = "HTML files (*.htm)|*.htm|All files (*.*)|*.*"
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
-                string htmlContent = File.ReadAllText(filePath);
-                ParseHtml(htmlContent);
+                BeforeVM.LoadHtmlContent(filePath);
             }
         }
 
-        private void ParseHtml(string htmlContent)
+        private void UploadAfterHtml()
         {
-            HtmlDocument htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(htmlContent);
-
-            var paragraphs = htmlDocument.DocumentNode.SelectNodes("//table");
-            HtmlContent = "";
-
-            if (paragraphs != null)
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                foreach (var paragraph in paragraphs)
-                {
-                    HtmlContent += paragraph.InnerText + Environment.NewLine;
-                }
-            }
-            else
+                Filter = "HTML files (*.htm)|*.htm|All files (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
             {
-                HtmlContent = "No <table> tags found.";
+                string filePath = openFileDialog.FileName;
+                AfterVM.LoadHtmlContent(filePath);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

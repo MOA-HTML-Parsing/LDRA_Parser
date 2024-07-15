@@ -45,6 +45,12 @@ namespace LDRA_Parser
             }
 
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
        
         private void TextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -60,5 +66,5 @@ namespace LDRA_Parser
         }
 
    
+
     }
-}
