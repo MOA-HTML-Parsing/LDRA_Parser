@@ -6,15 +6,27 @@
         xmlns:viewModel="clr-namespace:LDRA_Parser.ViewModel"
         xmlns:local_2="clr-namespace:LDRA_Parser.Model"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1024" Width="1440">
+        Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
 
         <viewModel:FileSystemViewModel/>
 
     </Window.DataContext>
     <Grid>
-        <Button Content="Load Files" Click="OnLoadFilesClicked" HorizontalAlignment="Left" Height="24" Margin="20,46,0,0" VerticalAlignment="Top" Width="150"/>
-        <TreeView ItemsSource="{Binding Items}" Width="150" Height="374.96" Margin="18,95,1272,538">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="650"/>
+            <RowDefinition Height="250*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="620*"/>
+            <ColumnDefinition Width="620*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,15,0" 
+                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0"/>
+
+        <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,0" Grid.RowSpan="2">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
                     <TextBlock x:Name="input_textblock" MouseRightButtonDown="TextBlock_MouseRightButtonDown" Text="{Binding Name}" />
@@ -22,7 +34,9 @@
             </TreeView.Resources>
         </TreeView>
 
-        <ListView Grid.Column="0" ItemsSource="{Binding BeforeVM.BeforeViewList}" Width="599" Height="600" Margin="196,96,645,312">
+        <Rectangle  Fill="#40000000" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2,0,0,0" Grid.Column="1"/>
+
+        <ListView Grid.Column="1" ItemsSource="{Binding BeforeVM.BeforeViewList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15,100,15,10">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
@@ -33,7 +47,7 @@
             </ListView.View>
         </ListView>
 
-        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Height="600" Width="600" Margin="828,90,12,318">
+        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15,100,15,10" Grid.Column="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
@@ -43,8 +57,9 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Label Content="BEFORE" HorizontalAlignment="Left" Height="55" Margin="196,44,0,0" VerticalAlignment="Top" Width="109"/>
-        <Label Content="AFTER" HorizontalAlignment="Left" Height="24" Margin="820,44,0,0" VerticalAlignment="Top" Width="112"/>
+        <Label Content="BEFORE" HorizontalAlignment="Left" Height="55" Margin="44,31,0,0" VerticalAlignment="Top" Width="109" Grid.Column="1"/>
+        <Label Content="AFTER" HorizontalAlignment="Left" Height="24" Margin="32,44,0,0" VerticalAlignment="Top" Width="112" Grid.Column="2"/>
+
     </Grid>
 
 
