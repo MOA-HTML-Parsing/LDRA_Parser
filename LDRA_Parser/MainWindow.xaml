@@ -15,99 +15,117 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
-        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Width="300" Height="600" TextChanged="TextBox_TextChanged"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Button Content="Upload Before HTML" Width="150" Height="30" Command="{Binding UploadBeforeCommand}" Margin="10"/>
+            <Button Content="Upload After HTML" Width="150" Height="30" Command="{Binding UploadAfterCommand}" Margin="10"/>
+        </StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="340,44,437,8">
-
-            <ListView ItemsSource="{Binding BeforeViewList}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.DataContext>
-                    <local:BeforeViewModel/>
-                </ListView.DataContext>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Number_of_Violations">
-                            <GridViewColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="Number&#x0a;of&#x0a;Violations"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center" />
-                                </DataTemplate>
-                            </GridViewColumn.HeaderTemplate>
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Number_of_Violations}"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-
-                        <GridViewColumn Header="LDRA_Code">
-                            <GridViewColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="LDRA&#x0a;Code"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center" />
-                                </DataTemplate>
-                            </GridViewColumn.HeaderTemplate>
-                            <GridViewColumn.DisplayMemberBinding>
-                                <Binding Path="LDRA_Code"/>
-                            </GridViewColumn.DisplayMemberBinding>
-                        </GridViewColumn>
-
-                        <GridViewColumn Header="Rule_Standards">
-                            <GridViewColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="Rule Standards"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center" />
-                                </DataTemplate>
-                            </GridViewColumn.HeaderTemplate>
-                            <GridViewColumn.DisplayMemberBinding>
-                                <Binding Path="Rule_Standards"/>
-                            </GridViewColumn.DisplayMemberBinding>
-                        </GridViewColumn>
-
-                        <GridViewColumn Header="MISRA_Code">
-                            <GridViewColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="MISRA-C:2004 Code"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center" />
-                                </DataTemplate>
-                            </GridViewColumn.HeaderTemplate>
-                            <GridViewColumn.DisplayMemberBinding>
-                                <Binding Path="MISRA_Code"/>
-                            </GridViewColumn.DisplayMemberBinding>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-
-        </ScrollViewer>
-
-                <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Width="650" Height="600" Margin="20,0,0,150">
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="10">
+            <ScrollViewer Width="600" Height="600" Margin="150,10,10,10">
+                <ListView ItemsSource="{Binding BeforeVM.BeforeViewList}" Width="600">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Number of Violations" DisplayMemberBinding="{Binding Number_of_Violations}" Width="165"/>
-                            <GridViewColumn Header="LDRA Code" DisplayMemberBinding="{Binding LDRA_Code}" Width="110"/>
-                            <GridViewColumn Header="Rule Standards" DisplayMemberBinding="{Binding Rule_Standards}" Width="180"/>
-                            <GridViewColumn Header="MISRA-C:2004 Code" DisplayMemberBinding="{Binding MISRA_Code}" Width="200"/>
+                            <GridViewColumn Header="Number of Violations" Width="165">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Number_of_Violations}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="LDRA Code" Width="110">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding LDRA_Code}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Rule Standards" Width="180">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Rule_Standards}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="MISRA-C:2004 Code" Width="200">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding MISRA_Code}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
+            </ScrollViewer>
+
+            <ScrollViewer Width="600" Height="600" Margin="10">
+                <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Width="600">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Number of Violations" Width="165">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Number_of_Violations}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="LDRA Code" Width="110">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding LDRA_Code}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Rule Standards" Width="180">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Rule_Standards}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="MISRA-C:2004 Code" Width="200">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding MISRA_Code}"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </ScrollViewer>
+        </StackPanel>
     </Grid>
 </Window>

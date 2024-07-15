@@ -1,13 +1,8 @@
 ﻿using LDRA_Parser.Model;
+using HtmlAgilityPack;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HtmlAgilityPack;
-using System.IO;
 
 namespace LDRA_Parser.ViewModel
 {
@@ -21,7 +16,7 @@ namespace LDRA_Parser.ViewModel
             set
             {
                 _people = value;
-                OnPropertyChanged("BeforeViewList");
+                OnPropertyChanged("AfterViewList");
             }
         }
 
@@ -52,19 +47,32 @@ namespace LDRA_Parser.ViewModel
                                 var cells = row.SelectNodes(".//td");
                                 if (cells != null && cells.Count == 4)
                                 {
-                                    AfterItem item = new AfterItem(
-                                        cells[0].InnerText.Trim(),
-                                        cells[1].InnerText.Trim(),
-                                        cells[2].InnerText.Trim(),
-                                        cells[3].InnerText.Trim()
-                                    );
-                                    AfterViewList.Add(item);
+                                    var scriptNode = cells[2].SelectSingleNode(".//script");
+                                    if (scriptNode != null)
+                                    {
+                                        string scriptContent = scriptNode.InnerText;
+                                        int startIndex = scriptContent.IndexOf("document.write('") + "document.write('".Length;
+                                        int endIndex = scriptContent.LastIndexOf("')");
+                                        if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex)
+                                        {
+                                            string extractedText = scriptContent.Substring(startIndex, endIndex - startIndex);
+                                            extractedText = extractedText.Replace("\\'", "'").Replace("\\x", "&#x");
+                                            AfterItem item = new AfterItem(
+                                                cells[0].InnerText.Trim(),
+                                                cells[1].InnerText.Trim(),
+                                                extractedText.Trim(),
+                                                cells[3].InnerText.Trim()
+                                            );
+                                            AfterViewList.Add(item);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+            OnPropertyChanged("AfterViewList");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
