@@ -9,7 +9,7 @@
         Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
 
-        <viewModel:FileSystemViewModel/>
+        <viewModel:MainViewModel/>
 
     </Window.DataContext>
     <Grid Height="884" VerticalAlignment="Top">
