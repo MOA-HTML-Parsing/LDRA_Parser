@@ -12,6 +12,7 @@ using System.Windows;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 
 
@@ -298,6 +299,50 @@ namespace LDRA_Parser.ViewModel
             AfterVM.updateAfterList(afterit);
 
 
+        }
+
+        public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
+        {
+            // HTML 내용을 문자열로 읽어옵니다.
+            string beforeHtmlContent = File.ReadAllText(beforehtmlPath);
+            string afterHtmlContent = File.ReadAllText(afterhtmlPath);
+
+            // 정규 표현식 패턴을 정의합니다.
+            string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'";
+
+            // 정규 표현식을 사용하여 데이터를 추출합니다.
+            MatchCollection beforeMatches = Regex.Matches(beforeHtmlContent, pattern);
+            MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
+
+            // 추출된 데이터를 저장할 리스트를 생성합니다.
+            List<string> beforeViolations = new List<string>();
+            List<string> afterViolations = new List<string>();
+
+            // 추출된 각 매치를 처리합니다.
+            foreach (Match match in beforeMatches)
+            {
+                string violationNumber = match.Groups[1].Value;
+                string location = match.Groups[2].Value;
+                string result = $"Violation Number : {violationNumber}     Location : {location}";
+                beforeViolations.Add(result);
+            }
+            foreach (Match match in afterMatches)
+            {
+                string violationNumber = match.Groups[1].Value;
+                string location = match.Groups[2].Value;
+                string result = $"Violation Number : {violationNumber}     Location : {location}";
+                afterViolations.Add(result);
+            }
+
+            // 결과를 출력합니다.
+            foreach (string violation in beforeViolations)
+            {
+                Console.WriteLine(violation);
+            }
+            foreach (string violation in afterViolations)
+            {
+                Console.WriteLine(violation);
+            }
         }
 
     }
