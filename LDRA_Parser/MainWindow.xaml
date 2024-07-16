@@ -8,9 +8,7 @@
             mc:Ignorable="d"
             Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
-
-        <viewModel:MainViewModel/>
-
+        <viewModel:FileSystemViewModel/>
     </Window.DataContext>
     <Grid Height="884" VerticalAlignment="Top">
         <Grid.RowDefinitions>
@@ -37,6 +35,7 @@
         </TreeView>
 
         <Rectangle  Fill="#40000000" HorizontalAlignment="Left" Margin="2,0,0,0" Grid.Column="1" Width="0"/>
+
 
         <StackPanel Grid.Column="1" Orientation="Vertical">
             <ListView x:Name="BeforeList" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10">
@@ -81,6 +80,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <Button Grid.Column="1" Content="Compare" HorizontalAlignment="Left" Margin="553,32,0,0" VerticalAlignment="Top" Height="42" Width="52" Click="Button_Click_1"/>
 
     </Grid>
 </Window>

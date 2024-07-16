@@ -24,7 +24,6 @@ namespace LDRA_Parser
     public partial class MainWindow : Window
     {
         private FileSystemViewModel _viewModel;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -202,7 +201,19 @@ namespace LDRA_Parser
             {
                 MessageBox.Show($"Failed to parse HTML: {ex.Message}");
             }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+          
+            var BeforeItems = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
+            var AfterItems = AfterList.ItemsSource as IEnumerable<AfterItem>;
+
+
+
+
+            _viewModel.compareBeforeAfter(BeforeItems,AfterItems);
         }
 
+    
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
 
 namespace LDRA_Parser.ViewModel
 {
@@ -138,6 +139,23 @@ namespace LDRA_Parser.ViewModel
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public void updateAfterList(List<AfterItem> afterit)
+        {
+            AfterViewList = new ObservableCollection<AfterItem>();
+            if (afterit != null)
+            {
+                foreach (var afterItem in afterit)
+                {
+                    AfterViewList.Add(afterItem);
+                }
+                OnPropertyChanged("AfterViewList");
+            }
+            else
+            {
+                MessageBox.Show("차이없음");
+            }
         }
     }
 }

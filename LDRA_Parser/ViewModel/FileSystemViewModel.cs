@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Windows;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Collections;
 
 
 
@@ -89,8 +90,8 @@ namespace LDRA_Parser.ViewModel
         public void LoadDrives()
         {
             Items.Clear();
-            CommonOpenFileDialog cofd = new CommonOpenFileDialog(); 
-            cofd.IsFolderPicker = true; 
+            CommonOpenFileDialog cofd = new CommonOpenFileDialog();
+            cofd.IsFolderPicker = true;
             if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 var driveItem = new FileSystemItem
@@ -106,7 +107,7 @@ namespace LDRA_Parser.ViewModel
                 Items.Add(driveItem);
             }
 
-             
+
         }
 
         private async void LoadChildren(FileSystemItem item)
@@ -229,5 +230,75 @@ namespace LDRA_Parser.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
+        /*
+         * 문서 비교 로직
+         */
+        //Console.WriteLine(beforeItems.Equals(afterItem));
+        public void compareBeforeAfter(IEnumerable<BeforeItem>? beforeItems, IEnumerable<AfterItem>? afterItems)
+        {
+            List<BeforeItem> beforeit = new List<BeforeItem>();
+            List<AfterItem> afterit = new List<AfterItem>();
+
+
+            foreach (var beforeItem in beforeItems)
+            {
+                Console.WriteLine(beforeItems.Count());
+                int count = 0;
+                foreach (var afterItem in afterItems)
+                {
+                    count++;
+                    if (beforeItem.LDRA_Code == afterItem.LDRA_Code) // LDRA_CODE가 같으면 내부까지 확인
+                    {
+                        
+                        beforeit.Add(beforeItem);
+                        afterit.Add(afterItem); 
+                        //같으면 내부 더 확인
+                        //이 부분은 나중에
+
+
+
+                        break; // 같은놈 있으니깐 for문 더 돌 필요 없다.
+                    }
+                    else
+                    {
+                        if (count == afterItems.Count())
+                        {
+                            beforeit.Add(beforeItem);
+                            afterit.Add(null); // 칸 맞춰줄려고
+                            //마지막까지 왔는데 같은 놈 없으면 바로 리스트에 집어넣는다.
+                        }
+                    }
+                }
+            }
+            //------------------------------------------
+            //after기준에서 한번더 check
+            foreach (var afterItem in afterItems)
+            {
+                int count = 0;
+                foreach (var beforeItem in beforeItems)
+                {
+                    count++;
+                    if (beforeItem.LDRA_Code == afterItem.LDRA_Code) // LDRA_CODE가 같으면 내부까지 확인
+                    {
+                        //이미 before 검사할때 넣었으므로 이부분에서 걸리면 바로 continue
+                        break; // 같은놈 있으니깐 for문 더 돌 필요 없다.
+                    }
+                    if (count == beforeItems.Count())
+                    {
+                        afterit.Add(afterItem);
+                        beforeit.Add(null); // 칸 맞춰줄려고
+                        //마지막까지 왔는데 같은 놈 없으면 바로 리스트에 집어넣는다.
+                    }
+                }
+            }
+
+            BeforeVM.updateBeforeList(beforeit);
+            AfterVM.updateAfterList(afterit);
+
+
+        }
+
     }
 }

@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
+using OpenQA.Selenium.DevTools.V124.ServiceWorker;
+using System.Windows;
 
 namespace LDRA_Parser.ViewModel
 {
@@ -78,6 +80,25 @@ namespace LDRA_Parser.ViewModel
             OnPropertyChanged("BeforeViewList");
         }
 
+        public void updateBeforeList(List<BeforeItem> beforeit)
+        {
+            BeforeViewList = new ObservableCollection<BeforeItem>();
+            if (beforeit != null)
+            {
+                foreach (var beforeItem in beforeit)
+                {
+                    BeforeViewList.Add(beforeItem);
+                }
+                OnPropertyChanged("BeforeViewList");
+            }
+            else
+            {
+                MessageBox.Show("차이없음");
+            }
+
+        }
+
+        
         private string ExtractTextFromScript(HtmlNode cell)
         {
             var scriptNodes = cell.SelectNodes(".//script");
