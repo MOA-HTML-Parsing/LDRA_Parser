@@ -170,34 +170,27 @@ namespace LDRA_Parser
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.Load(htmlFilePath);
 
-                StringBuilder sb = new StringBuilder();
+                // HTML 내용을 문자열로 읽어옵니다.
+                string htmlContent = File.ReadAllText(htmlFilePath);
 
-                // Extract all <b> tags and their related text and links
-                var violationNodes = htmlDoc.DocumentNode.SelectNodes("//b[normalize-space(text())='Violation Number']");
-                var locationNodes = htmlDoc.DocumentNode.SelectNodes("//b[normalize-space(text())='Location']");
+                // 정규 표현식 패턴을 정의합니다.
+                string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'";
 
-                if (violationNodes != null)
+                // 정규 표현식을 사용하여 데이터를 추출합니다.
+                MatchCollection matches = Regex.Matches(htmlContent, pattern);
+
+                // 추출된 데이터를 저장할 리스트를 생성합니다.
+                var violations = new List<ViolationItem>();
+
+                foreach (Match match in matches)
                 {
-                    foreach (var violationNode in violationNodes)
-                    {
-                        // Extract the violation number
-                        var violationNumber = violationNode.NextSibling.InnerText.Trim();
-                        sb.AppendLine($"Violation Number: {violationNumber}");
-                    }
+                    string violationNumber = match.Groups[1].Value;
+                    string location = match.Groups[2].Value;
+                    violations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
                 }
 
-                if (locationNodes != null)
-                {
-                    foreach (var locationNode in locationNodes)
-                    {
-                        // Extract the location text and links
-                        var locationText = locationNode.ParentNode.InnerHtml;
-                        sb.AppendLine($"Location: {locationText}");
-                    }
-                }
-
-                // Set the extracted text to the TextBox
-                ParsedHtmlTextBox.Text = sb.ToString();
+                // ListBox에 데이터를 바인딩합니다.
+                ParsedHtmlListBox.ItemsSource = violations;
             }
             catch (Exception ex)
             {
@@ -207,12 +200,14 @@ namespace LDRA_Parser
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+
             var BeforeItems = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
             var AfterItems = AfterList.ItemsSource as IEnumerable<AfterItem>;
             _viewModel.compareBeforeAfter(BeforeItems, AfterItems);
             //Console.WriteLine("gdgd");
             //string beforeHtmlFilePath = @"C:\Users\user\Desktop\LDRA Code Review Report\Before\MMD_MUX_CWE_link_popup36S.htm";
             //string afterHtmlFilePath = @"C:\Users\user\Desktop\LDRA Code Review Report\After\MMD_MUX_CWE_link_popup36S.htm";
+
 
             //string beforeHtmlContent = File.ReadAllText(beforeHtmlFilePath);
             //string afterHtmlContent = File.ReadAllText(afterHtmlFilePath);
