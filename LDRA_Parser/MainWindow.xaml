@@ -59,7 +59,7 @@
                 </ScrollViewer>
             </Border>
         </StackPanel>
-        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2">
+        <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2">
 
             <ListView.View>
                 <GridView>
