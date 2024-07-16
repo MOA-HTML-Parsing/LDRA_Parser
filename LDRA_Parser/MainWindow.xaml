@@ -1,12 +1,12 @@
 ﻿<Window x:Class="LDRA_Parser.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModel="clr-namespace:LDRA_Parser.ViewModel"
-        xmlns:local_2="clr-namespace:LDRA_Parser.Model"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1440">
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:viewModel="clr-namespace:LDRA_Parser.ViewModel"
+            xmlns:local_2="clr-namespace:LDRA_Parser.Model"
+            mc:Ignorable="d"
+            Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
 
         <viewModel:MainViewModel/>
@@ -25,7 +25,7 @@
         </Grid.ColumnDefinitions>
 
         <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,15,0" 
-                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0" Height="43"/>
+                    VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0" Height="43"/>
 
         <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,0" Grid.RowSpan="2">
 
@@ -38,17 +38,28 @@
 
         <Rectangle  Fill="#40000000" HorizontalAlignment="Left" Margin="2,0,0,0" Grid.Column="1" Width="0"/>
 
-        <ListView x:Name="BeforeList" Grid.Column="1" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
-                    <GridViewColumn Header="LDRA Code" Width="150" DisplayMemberBinding="{Binding LDRA_Code}"/>
-                    <GridViewColumn Header="Rule Standards" Width="150" DisplayMemberBinding="{Binding Rule_Standards}"/>
-                    <GridViewColumn Header="MISRA-C:2004 Code" Width="150" DisplayMemberBinding="{Binding MISRA_Code}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <ListView x:Name="BeforeList" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
+                        <GridViewColumn Header="LDRA Code" Width="150" DisplayMemberBinding="{Binding LDRA_Code}"/>
+                        <GridViewColumn Header="Rule Standards" Width="150" DisplayMemberBinding="{Binding Rule_Standards}"/>
+                        <GridViewColumn Header="MISRA-C:2004 Code" Width="150" DisplayMemberBinding="{Binding MISRA_Code}"/>
+                    </GridView>
+                </ListView.View>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="0,10">
+                <ScrollViewer>
+                    <TextBox x:Name="ParsedHtmlTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="10"/>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
         <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2">
 
             <ListView.View>
@@ -71,14 +82,5 @@
             </ListView.View>
         </ListView>
 
-
-        
     </Grid>
-
-
 </Window>
-    
-    
-    
-
-    

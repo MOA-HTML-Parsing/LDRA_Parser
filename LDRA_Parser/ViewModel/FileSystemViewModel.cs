@@ -66,6 +66,16 @@ namespace LDRA_Parser.ViewModel
         public BeforeViewModel BeforeVM { get; private set; }
         public AfterViewModel AfterVM { get; private set; }
 
+        private string _baseDirectory;
+        public string BaseDirectory
+        {
+            get { return _baseDirectory; }
+            set
+            {
+                _baseDirectory = value;
+                OnPropertyChanged(nameof(BaseDirectory));
+            }
+        }
         public FileSystemViewModel()
         {
             Items = new ObservableCollection<FileSystemItem>();
@@ -89,6 +99,9 @@ namespace LDRA_Parser.ViewModel
                     FullPath = cofd.FileName,
                     IsDirectory = true
                 };
+
+                BaseDirectory = cofd.FileName;
+
                 LoadChildren(driveItem);
                 Items.Add(driveItem);
             }
