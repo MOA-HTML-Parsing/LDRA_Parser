@@ -65,6 +65,67 @@ namespace LDRA_Parser
             }
         }
 
+        /*
+         * 저장하기
+         */
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var items = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
+            if (items != null)
+            {
+                var htmlContent = GenerateHtml(items);
+                SaveHtmlToFile(htmlContent);
+            }
+
+        }
+
+        /*
+        public string Number_of_Violations { get; set; }    
+        public string LDRA_Code { get; set; }
+        public string Rule_Standards { get; set; }
+        public string MISRA_Code { get; set; }
+
+         */
+
+        private string GenerateHtml(IEnumerable<BeforeItem> items)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("<html>");
+            sb.AppendLine("<head><title>ListView Data</title></head>");
+            sb.AppendLine("<body>");
+            sb.AppendLine("<table border='1'>");
+            sb.AppendLine("<tr><th>Number_of_Violations</th><th>LDRA_Code</th><th>Rule_Standards</th><th>MISRA_Code</th></tr>");
+
+            foreach (var item in items)
+            {
+                sb.AppendLine($"<tr><td>{item.Number_of_Violations}</td><td>{item.LDRA_Code}</td><td>{item.Rule_Standards}</td><td>{item.MISRA_Code}</td></tr>");
+            }
+
+            sb.AppendLine("</table>");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            return sb.ToString();
+        }
+
+        private void SaveHtmlToFile(string htmlContent)
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = "ListViewData",
+                DefaultExt = ".html",
+                Filter = "HTML files (.html)|*.html"
+            };
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                var filename = dialog.FileName;
+                File.WriteAllText(filename, htmlContent);
+                MessageBox.Show("Data saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
 
 
     }
