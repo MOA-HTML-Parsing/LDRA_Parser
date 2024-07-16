@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Net.Http;
 using OpenQA.Selenium.DevTools.V124.ServiceWorker;
 using System.Windows;
 
@@ -60,11 +61,13 @@ namespace LDRA_Parser.ViewModel
 
                                     if (ContainsHyperlink(cells))
                                     {
+                                        string hrefValue = ExtractHrefValue(cells);
                                         BeforeItem item = new BeforeItem(
                                             cells[0].InnerText.Trim(),
                                             cells[1].InnerText.Trim(),
                                             extractedText2.Trim(),
-                                            extractedText3?.Trim()
+                                            extractedText3?.Trim(),
+                                            hrefValue
                                         );
                                         BeforeViewList.Add(item);
                                     }
@@ -147,12 +150,33 @@ namespace LDRA_Parser.ViewModel
                         string hrefValue = aNode.Attributes["href"].Value;
                         if (Path.GetExtension(hrefValue) == ".htm")
                         {
+                            Console.WriteLine($"Found hrefValue: {hrefValue}");
                             return true;
                         }
                     }
                 }
             }
             return false;
+        }
+
+        private string ExtractHrefValue(HtmlNodeCollection cells)
+        {
+            foreach (var cell in cells)
+            {
+                var aNodes = cell.SelectNodes(".//a[@href]");
+                if (aNodes != null)
+                {
+                    foreach (var aNode in aNodes)
+                    {
+                        string hrefValue = aNode.Attributes["href"].Value;
+                        if (Path.GetExtension(hrefValue) == ".htm")
+                        {
+                            return hrefValue;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
