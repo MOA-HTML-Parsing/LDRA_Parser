@@ -63,6 +63,7 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

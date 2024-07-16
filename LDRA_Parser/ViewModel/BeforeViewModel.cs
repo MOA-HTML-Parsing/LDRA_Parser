@@ -3,6 +3,7 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 
 namespace LDRA_Parser.ViewModel
 {
@@ -55,13 +56,16 @@ namespace LDRA_Parser.ViewModel
                                         extractedText3 = null;
                                     }
 
-                                    BeforeItem item = new BeforeItem(
-                                        cells[0].InnerText.Trim(),
-                                        cells[1].InnerText.Trim(),
-                                        extractedText2.Trim(),
-                                        extractedText3?.Trim()
-                                    );
-                                    BeforeViewList.Add(item);
+                                    if (ContainsHyperlink(cells))
+                                    {
+                                        BeforeItem item = new BeforeItem(
+                                            cells[0].InnerText.Trim(),
+                                            cells[1].InnerText.Trim(),
+                                            extractedText2.Trim(),
+                                            extractedText3?.Trim()
+                                        );
+                                        BeforeViewList.Add(item);
+                                    }
                                 }
                             }
                         }
@@ -108,6 +112,26 @@ namespace LDRA_Parser.ViewModel
                 }
             }
             return cell.InnerText.Trim();
+        }
+
+        private bool ContainsHyperlink(HtmlNodeCollection cells)
+        {
+            foreach (var cell in cells)
+            {
+                var aNodes = cell.SelectNodes(".//a[@href]");
+                if (aNodes != null)
+                {
+                    foreach (var aNode in aNodes)
+                    {
+                        string hrefValue = aNode.Attributes["href"].Value;
+                        if (Path.GetExtension(hrefValue) == ".htm")
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
