@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
 
 namespace LDRA_Parser.ViewModel
 {
@@ -18,6 +19,17 @@ namespace LDRA_Parser.ViewModel
             {
                 _people = value;
                 OnPropertyChanged("AfterViewList");
+            }
+        }
+
+        private bool _isDetailsVisible;
+        public bool IsDetailsVisible
+        {
+            get { return _isDetailsVisible; }
+            set
+            {
+                _isDetailsVisible = value;
+                OnPropertyChanged(nameof(IsDetailsVisible));
             }
         }
 
@@ -61,7 +73,8 @@ namespace LDRA_Parser.ViewModel
                                             cells[0].InnerText.Trim(),
                                             cells[1].InnerText.Trim(),
                                             extractedText2.Trim(),
-                                            extractedText3?.Trim()
+                                            extractedText3?.Trim(),
+                                            "Example"
                                         );
                                         AfterViewList.Add(item);
                                     }
@@ -131,6 +144,26 @@ namespace LDRA_Parser.ViewModel
                 }
             }
             return false;
+        }
+
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                if (isSelected != value)
+                {
+                    isSelected = value;
+                    OnPropertyChanged(nameof(IsSelected));
+                    OnPropertyChanged(nameof(ShouldShowDetails)); // DetailsTextBox의 Visibility를 업데이트하기 위해 OnPropertyChanged 호출
+                }
+            }
+        }
+
+        public Visibility ShouldShowDetails
+        {
+            get { return IsSelected ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -8,9 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
-
         <viewModel:MainViewModel/>
-
     </Window.DataContext>
     <Grid Height="884" VerticalAlignment="Top">
         <Grid.RowDefinitions>
@@ -23,6 +21,58 @@
             <ColumnDefinition Width="421*"/>
             <ColumnDefinition Width="199*"/>
         </Grid.ColumnDefinitions>
+
+        <!--<Grid.Resources>
+            <Style TargetType="ListViewItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Padding="5" Margin="2">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition SharedSizeGroup="Column1"/>
+                                            <ColumnDefinition SharedSizeGroup="Column2"/>
+                                            <ColumnDefinition SharedSizeGroup="Column3"/>
+                                            <ColumnDefinition SharedSizeGroup="Column4"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Number_of_Violations}" Grid.Column="0" Margin="5" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding LDRA_Code}" Grid.Column="1" Margin="5" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Rule_Standards}" Grid.Column="2" Margin="5" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding MISRA_Code}" Grid.Column="3" Margin="5" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                    </Grid>
+
+                                    --><!-- Toggle button --><!--
+                                    <ToggleButton x:Name="toggleButton" Content="Details" ClickMode="Press" Margin="5"/>
+                                    --><!-- Details --><!--
+                                    <TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
+                                        <TextBox.Text>
+                                            <MultiBinding StringFormat="{}{0}{1}{2}">
+                                                <Binding Path="LDRA_Code"/>
+                                                <Binding Path="Rule_Standards"/>
+                                                <Binding Path="MISRA_Code"/>
+                                                <Binding Path="Changed_Content"/>
+                                            </MultiBinding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="LightYellow"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" SourceName="toggleButton" Value="True">
+                                    <Setter TargetName="DetailsTextBox" Property="Visibility" Value="Visible"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>-->
 
         <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,15,0" 
                 VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0" Height="43"/>
@@ -38,28 +88,216 @@
 
         <Rectangle  Fill="#40000000" HorizontalAlignment="Left" Margin="2,0,0,0" Grid.Column="1" Width="0"/>
 
-        <ListView x:Name="BeforeList" Grid.Column="1" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10">
+        <ListView x:Name="BeforeList" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10" Grid.Column="1" MouseDoubleClick="BeforeList_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
-                    <GridViewColumn Header="LDRA Code" Width="150" DisplayMemberBinding="{Binding LDRA_Code}"/>
-                    <GridViewColumn Header="Rule Standards" Width="150" DisplayMemberBinding="{Binding Rule_Standards}"/>
-                    <GridViewColumn Header="MISRA-C:2004 Code" Width="150" DisplayMemberBinding="{Binding MISRA_Code}"/>
+                    <!-- 첫 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Number of Violations" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Number_of_Violations}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- 두 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="LDRA Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LDRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- 세 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Rule Standards" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Rule_Standards}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- 네 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="MISRA-C:2004 Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
+
+            <!-- ListViewItem 스타일 -->
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Padding="5" Margin="2">
+                                    <StackPanel>
+                                        <!-- 첫 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding Number_of_Violations}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 두 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding LDRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 세 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding Rule_Standards}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 네 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 상세 정보 텍스트박스 -->
+                                        <TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
+                                            <TextBox.Text>
+                                                <MultiBinding StringFormat="{}{0}{1}{2}">
+                                                    <Binding Path="LDRA_Code"/>
+                                                    <Binding Path="Rule_Standards"/>
+                                                    <Binding Path="MISRA_Code"/>
+                                                    <Binding Path="Changed_Content"/>
+                                                </MultiBinding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 템플릿 트리거 -->
+                                <ControlTemplate.Triggers>
+                                    <!--<Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                                        <Setter TargetName="DetailsTextBox" Property="Visibility" Value="Visible"/>
+                                    </Trigger>-->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="LightYellow"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
 
-        <ListView ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2">
+        <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2" MouseDoubleClick="AfterList_MouseDoubleClick">
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Number of Violations" Width="150" DisplayMemberBinding="{Binding Number_of_Violations}"/>
-                    <GridViewColumn Header="LDRA Code" Width="150" DisplayMemberBinding="{Binding LDRA_Code}"/>
-                    <GridViewColumn Header="Rule Standards" Width="150" DisplayMemberBinding="{Binding Rule_Standards}"/>
-                    <GridViewColumn Header="MISRA-C:2004 Code" Width="150" DisplayMemberBinding="{Binding MISRA_Code}"/>
+                    <!-- 첫 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Number of Violations" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Number_of_Violations}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- 두 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="LDRA Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LDRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- 세 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Rule Standards" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Rule_Standards}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- 네 번째 열 -->
+                    <GridViewColumn Width="Auto">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="MISRA-C:2004 Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
+
+            <!-- ListViewItem 스타일 -->
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Padding="5" Margin="2">
+                                    <StackPanel>
+                                        <!-- 첫 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding Number_of_Violations}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 두 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding LDRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 세 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding Rule_Standards}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 네 번째 열의 데이터 -->
+                                        <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                                        <!-- 상세 정보 텍스트박스 -->
+                                        <TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
+                                            <TextBox.Text>
+                                                <MultiBinding StringFormat="{}{0}{1}{2}">
+                                                    <Binding Path="LDRA_Code"/>
+                                                    <Binding Path="Rule_Standards"/>
+                                                    <Binding Path="MISRA_Code"/>
+                                                    <Binding Path="Changed_Content"/>
+                                                </MultiBinding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 템플릿 트리거 -->
+                                <ControlTemplate.Triggers>
+                                    <!--<Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                            <Setter TargetName="DetailsTextBox" Property="Visibility" Value="Visible"/>
+                        </Trigger>-->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="LightYellow"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+
         </ListView>
+        
         <Label Content="BEFORE" HorizontalAlignment="Left" Height="55" Margin="44,31,0,0" VerticalAlignment="Top" Width="109" Grid.Column="1"/>
         <Label Content="AFTER" HorizontalAlignment="Left" Height="24" Margin="32,44,0,0" VerticalAlignment="Top" Width="112" Grid.Column="2"/>
         <Button  Content="Save" Width="Auto" VerticalAlignment="Top" Margin="13,90,15,90" Grid.Column="3" Grid.Row="1" Click="Button_Click"/>
