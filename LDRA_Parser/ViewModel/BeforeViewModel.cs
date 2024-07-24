@@ -29,7 +29,7 @@ namespace LDRA_Parser.ViewModel
             BeforeViewList = new ObservableCollection<BeforeItem>();
         }
 
-        public void LoadHtmlContent(string filePath)
+        public void LoadHtmlContent(string filePath, string baseDirectory, string folderName)
         {
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.Load(filePath);
@@ -61,7 +61,7 @@ namespace LDRA_Parser.ViewModel
 
                                     if (ContainsHyperlink(cells))
                                     {
-                                        string hrefValue = ExtractHrefValue(cells);
+                                        string hrefValue = ExtractHrefValue(cells, baseDirectory, folderName);
                                         BeforeItem item = new BeforeItem(
                                             cells[0].InnerText.Trim(),
                                             cells[1].InnerText.Trim(),
@@ -180,8 +180,10 @@ namespace LDRA_Parser.ViewModel
             get { return IsSelected ? Visibility.Visible : Visibility.Collapsed; }
         }
 
-        private string ExtractHrefValue(HtmlNodeCollection cells)
+        private string ExtractHrefValue(HtmlNodeCollection cells, string baseDirectory, string folderName)
         {
+            string targetDirectory = System.IO.Path.Combine(baseDirectory, folderName);
+
             foreach (var cell in cells)
             {
                 var aNodes = cell.SelectNodes(".//a[@href]");
@@ -192,7 +194,8 @@ namespace LDRA_Parser.ViewModel
                         string hrefValue = aNode.Attributes["href"].Value;
                         if (Path.GetExtension(hrefValue) == ".htm")
                         {
-                            return hrefValue;
+                            string absolutePath = System.IO.Path.Combine(targetDirectory, hrefValue);
+                            return absolutePath;
                         }
                     }
                 }

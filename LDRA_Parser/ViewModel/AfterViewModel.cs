@@ -38,7 +38,7 @@ namespace LDRA_Parser.ViewModel
             AfterViewList = new ObservableCollection<AfterItem>();
         }
 
-        public void LoadHtmlContent(string filePath)
+        public void LoadHtmlContent(string filePath, string baseDirectory, string folderName)
         {
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.Load(filePath);
@@ -69,12 +69,14 @@ namespace LDRA_Parser.ViewModel
                                     }
                                     if (ContainsHyperlink(cells))
                                     {
+                                        string hrefValue = ExtractHrefValue(cells, baseDirectory, folderName);
                                         AfterItem item = new AfterItem(
                                             cells[0].InnerText.Trim(),
                                             cells[1].InnerText.Trim(),
                                             extractedText2.Trim(),
                                             extractedText3?.Trim(),
-                                            "Example"
+                                            "ex",
+                                            hrefValue
                                         );
                                         AfterViewList.Add(item);
                                     }
@@ -159,6 +161,30 @@ namespace LDRA_Parser.ViewModel
                     OnPropertyChanged(nameof(ShouldShowDetails)); // DetailsTextBox의 Visibility를 업데이트하기 위해 OnPropertyChanged 호출
                 }
             }
+        }
+
+        private string ExtractHrefValue(HtmlNodeCollection cells, string baseDirectory, string folderName)
+        {
+
+            string targetDirectory = System.IO.Path.Combine(baseDirectory, folderName);
+
+            foreach (var cell in cells)
+            {
+                var aNodes = cell.SelectNodes(".//a[@href]");
+                if (aNodes != null)
+                {
+                    foreach (var aNode in aNodes)
+                    {
+                        string hrefValue = aNode.Attributes["href"].Value;
+                        if (Path.GetExtension(hrefValue) == ".htm")
+                        {
+                            string absolutePath = System.IO.Path.Combine(targetDirectory, hrefValue);
+                            return absolutePath;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         public Visibility ShouldShowDetails

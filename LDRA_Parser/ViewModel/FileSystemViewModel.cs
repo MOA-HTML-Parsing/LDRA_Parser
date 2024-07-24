@@ -12,6 +12,7 @@ using System.Windows;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 
 
@@ -20,6 +21,8 @@ namespace LDRA_Parser.ViewModel
     public class FileSystemViewModel : INotifyPropertyChanged
     {
         private FileSystemItem _selectedItem;
+        private List<ViolationItem> beforeViolations;
+        private List<ViolationItem> afterViolations;
 
         public FileSystemItem SelectedItem
         {
@@ -67,6 +70,8 @@ namespace LDRA_Parser.ViewModel
         public BeforeViewModel BeforeVM { get; private set; }
         public AfterViewModel AfterVM { get; private set; }
 
+        public ParsedHtmlListModelI parsedHLM { get; private set; }
+
         private string _baseDirectory;
         public string BaseDirectory
         {
@@ -83,7 +88,10 @@ namespace LDRA_Parser.ViewModel
             SelectedItem = new FileSystemItem();
             BeforeVM = new BeforeViewModel();
             AfterVM = new AfterViewModel();
-
+            parsedHLM = new ParsedHtmlListModelI();
+            // 추출된 데이터를 저장할 리스트를 생성합니다.
+            beforeViolations = new List<ViolationItem>();
+            afterViolations = new List<ViolationItem>();
         }
 
 
@@ -217,12 +225,13 @@ namespace LDRA_Parser.ViewModel
             if (filePath.Contains(@"\Before\"))
             {
                 HtmlContent = fileContent;
-                BeforeVM.LoadHtmlContent(filePath);
+
+                BeforeVM.LoadHtmlContent(filePath, _baseDirectory, "Before");
             }
             else if (filePath.Contains(@"\After\"))
             {
                 HtmlContent2 = fileContent;
-                AfterVM.LoadHtmlContent(filePath);
+                AfterVM.LoadHtmlContent(filePath, _baseDirectory, "After");
             }
         }
 
@@ -251,11 +260,18 @@ namespace LDRA_Parser.ViewModel
                     count++;
                     if (beforeItem.LDRA_Code == afterItem.LDRA_Code) // LDRA_CODE가 같으면 내부까지 확인
                     {
-                        
-                        beforeit.Add(beforeItem);
-                        afterit.Add(afterItem); 
+                        popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
+                        ViolationItem beforeViolationItem = beforeViolations.Last();
+                        ViolationItem afterViolationItem = afterViolations.Last();
+
                         //같으면 내부 더 확인
                         //이 부분은 나중에
+                        if (!(beforeViolationItem.IsSame(afterViolationItem)))
+                        {
+                            beforeit.Add(beforeItem);
+                            afterit.Add(afterItem);
+
+                        }
 
 
 
@@ -296,6 +312,41 @@ namespace LDRA_Parser.ViewModel
 
             BeforeVM.updateBeforeList(beforeit);
             AfterVM.updateAfterList(afterit);
+            parsedHLM.updateParsedHtmlList(beforeViolations);
+            parsedHLM.updateParsedHtmlList(afterViolations);
+
+        }
+
+        public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
+        {
+            // HTML 내용을 문자열로 읽어옵니다.
+            string beforeHtmlContent = File.ReadAllText(beforehtmlPath);
+            string afterHtmlContent = File.ReadAllText(afterhtmlPath);
+
+            // 정규 표현식 패턴을 정의합니다.
+            string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'";
+
+            // 정규 표현식을 사용하여 데이터를 추출합니다.
+            MatchCollection beforeMatches = Regex.Matches(beforeHtmlContent, pattern);
+            MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
+
+
+
+            // 추출된 각 매치를 처리합니다.
+            foreach (Match match in beforeMatches)
+            {
+                string violationNumber = match.Groups[1].Value;
+                string location = match.Groups[2].Value;
+                string result = $"Violation Number : {violationNumber}     Location : {location}";
+                beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
+            }
+            foreach (Match match in afterMatches)
+            {
+                string violationNumber = match.Groups[1].Value;
+                string location = match.Groups[2].Value;
+                string result = $"Violation Number : {violationNumber}     Location : {location}";
+                afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
+            }
 
 
         }

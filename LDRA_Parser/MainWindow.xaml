@@ -162,7 +162,7 @@
                                         <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
 
                                         <!-- 상세 정보 텍스트박스 -->
-                                        <TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
+                                        <!--<TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
                                             <TextBox.Text>
                                                 <MultiBinding StringFormat="{}{0}{1}{2}">
                                                     <Binding Path="LDRA_Code"/>
@@ -171,7 +171,18 @@
                                                     <Binding Path="Changed_Content"/>
                                                 </MultiBinding>
                                             </TextBox.Text>
-                                        </TextBox>
+                                        </TextBox>-->
+                                        <ListBox x:Name="ParsedHtmlListBox" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="200" Visibility="Collapsed">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Location}"/>
+                                                        <Separator/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
                                     </StackPanel>
                                 </Border>
 
@@ -192,7 +203,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
 
-            <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2" MouseDoubleClick="AfterList_MouseDoubleClick">
+        <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2" MouseDoubleClick="AfterList_MouseDoubleClick">
 
                 <ListView.View>
                 <GridView>
@@ -267,7 +278,7 @@
                                         <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
 
                                         <!-- 상세 정보 텍스트박스 -->
-                                        <TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
+                                        <!--<TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
                                             <TextBox.Text>
                                                 <MultiBinding StringFormat="{}{0}{1}{2}">
                                                     <Binding Path="LDRA_Code"/>
@@ -276,7 +287,18 @@
                                                     <Binding Path="Changed_Content"/>
                                                 </MultiBinding>
                                             </TextBox.Text>
-                                        </TextBox>
+                                        </TextBox>-->
+                                        <ListBox x:Name="ParsedHtmlListBox" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="200" Visibility="Collapsed">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Location}"/>
+                                                        <Separator/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
                                     </StackPanel>
                                 </Border>
 
