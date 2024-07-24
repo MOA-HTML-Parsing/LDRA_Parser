@@ -12,13 +12,19 @@ namespace LDRA_Parser.Model
         public string LDRA_Code { get; set; }
         public string Rule_Standards { get; set; }
         public string MISRA_Code { get; set; }
+        public string Changed_Content { get; set; }
 
-        public AfterItem(string violations, string code, string standards, string misraCode)
+        public string HrefValue { get; set; }
+
+        public AfterItem(string violations, string code, string standards, string misraCode, string changedContent, string hrefValue)
+
         {
             Number_of_Violations = violations;
             LDRA_Code = code;
             Rule_Standards = standards;
             MISRA_Code = misraCode;
+            Changed_Content = changedContent;
+            HrefValue = hrefValue;
         }
     }
 }
