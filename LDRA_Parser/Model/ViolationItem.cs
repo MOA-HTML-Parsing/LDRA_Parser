@@ -23,6 +23,4 @@ namespace LDRA_Parser.Model
 
         }
     }
-
-
 }

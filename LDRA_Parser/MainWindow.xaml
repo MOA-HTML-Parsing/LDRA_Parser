@@ -114,7 +114,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
+                  
                     <!-- 세 번째 열 -->
                     <GridViewColumn Width="Auto">
                         <GridViewColumn.Header>
