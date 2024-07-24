@@ -172,5 +172,22 @@ namespace LDRA_Parser.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public void updateAfterList(List<AfterItem> afterit)
+        {
+            AfterViewList = new ObservableCollection<AfterItem>();
+            if (afterit != null)
+            {
+                foreach (var afterItem in afterit)
+                {
+                    AfterViewList.Add(afterItem);
+                }
+                OnPropertyChanged("AfterViewList");
+            }
+            else
+            {
+                MessageBox.Show("차이없음");
+            }
+        }
     }
 }

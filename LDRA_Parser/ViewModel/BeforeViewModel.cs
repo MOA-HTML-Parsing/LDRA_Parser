@@ -4,6 +4,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Net.Http;
+using OpenQA.Selenium.DevTools.V124.ServiceWorker;
 using System.Windows;
 
 namespace LDRA_Parser.ViewModel
@@ -59,12 +61,14 @@ namespace LDRA_Parser.ViewModel
 
                                     if (ContainsHyperlink(cells))
                                     {
+                                        string hrefValue = ExtractHrefValue(cells);
                                         BeforeItem item = new BeforeItem(
                                             cells[0].InnerText.Trim(),
                                             cells[1].InnerText.Trim(),
                                             extractedText2.Trim(),
                                             extractedText3?.Trim(),
-                                            "Example"
+                                            "Example",
+                                            hrefValue
                                         );
                                         BeforeViewList.Add(item);
                                     }
@@ -77,6 +81,25 @@ namespace LDRA_Parser.ViewModel
             OnPropertyChanged("BeforeViewList");
         }
 
+        public void updateBeforeList(List<BeforeItem> beforeit)
+        {
+            BeforeViewList = new ObservableCollection<BeforeItem>();
+            if (beforeit != null)
+            {
+                foreach (var beforeItem in beforeit)
+                {
+                    BeforeViewList.Add(beforeItem);
+                }
+                OnPropertyChanged("BeforeViewList");
+            }
+            else
+            {
+                MessageBox.Show("차이없음");
+            }
+
+        }
+
+        
         private string ExtractTextFromScript(HtmlNode cell)
         {
             var scriptNodes = cell.SelectNodes(".//script");
@@ -128,6 +151,7 @@ namespace LDRA_Parser.ViewModel
                         string hrefValue = aNode.Attributes["href"].Value;
                         if (Path.GetExtension(hrefValue) == ".htm")
                         {
+                            Console.WriteLine($"Found hrefValue: {hrefValue}");
                             return true;
                         }
                     }
@@ -154,6 +178,26 @@ namespace LDRA_Parser.ViewModel
         public Visibility ShouldShowDetails
         {
             get { return IsSelected ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        private string ExtractHrefValue(HtmlNodeCollection cells)
+        {
+            foreach (var cell in cells)
+            {
+                var aNodes = cell.SelectNodes(".//a[@href]");
+                if (aNodes != null)
+                {
+                    foreach (var aNode in aNodes)
+                    {
+                        string hrefValue = aNode.Attributes["href"].Value;
+                        if (Path.GetExtension(hrefValue) == ".htm")
+                        {
+                            return hrefValue;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

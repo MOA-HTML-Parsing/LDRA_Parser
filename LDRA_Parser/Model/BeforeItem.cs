@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
-﻿namespace LDRA_Parser.Model
+namespace LDRA_Parser.Model
 {
     public class BeforeItem
     {
@@ -15,13 +16,24 @@ using System.Threading.Tasks;
         public string MISRA_Code { get; set; }
         public string Changed_Content { get; set; }
 
-        public BeforeItem(string violations, string code, string standards, string misraCode, string changedContent)
+        public string HrefValue { get; set; }
+
+        public BeforeItem(string violations, string code, string standards, string misraCode, string changedContent, string hrefValue)
+
         {
             Number_of_Violations = violations;
             LDRA_Code = code;
             Rule_Standards = standards;
             MISRA_Code = misraCode;
             Changed_Content = changedContent;
+            HrefValue = hrefValue;
+            
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

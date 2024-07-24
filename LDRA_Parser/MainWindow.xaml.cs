@@ -25,7 +25,6 @@ namespace LDRA_Parser
     public partial class MainWindow : Window
     {
         private FileSystemViewModel _viewModel;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -127,23 +126,94 @@ namespace LDRA_Parser
                 MessageBox.Show("Data saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-        //private void BeforeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    var listView = sender as ListView;
-        //    if (listView.SelectedItem != null)
-        //    {
-        //        BeforeViewModel selectedItem = listView.SelectedItem as BeforeViewModel;
-        //        if (selectedItem.IsSelected)
-        //        {
-        //            selectedItem.IsSelected = false;
-        //        }
-        //        else
-        //        {
-        //            selectedItem.IsSelected = true;
-        //        }
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listViewItem = sender as ListViewItem;
+            if (listViewItem != null)
+            {
+                var item = listViewItem.Content as BeforeItem;
+                if (item != null && !string.IsNullOrEmpty(item.HrefValue))
+                {
+                    string baseDirectory = _viewModel.BaseDirectory;
+                    string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before");
+                    Console.WriteLine(baseDirectory);
+                    string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
 
-        //    }
-        //}
+                    try
+                    {
+                        if (File.Exists(absolutePath))
+                        {
+                            ParseAndDisplayHtml(absolutePath);
+                        }
+                        else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
+                        {
+                            System.Diagnostics.Process.Start(item.HrefValue);
+                        }
+                        else
+                        {
+                            MessageBox.Show("File does not exist or invalid URL.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to open link: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private void ParseAndDisplayHtml(string htmlFilePath)
+        {
+            try
+            {
+                HtmlDocument htmlDoc = new HtmlDocument();
+                htmlDoc.Load(htmlFilePath);
+
+                StringBuilder sb = new StringBuilder();
+
+                // Extract all <b> tags and their related text and links
+                var violationNodes = htmlDoc.DocumentNode.SelectNodes("//b[normalize-space(text())='Violation Number']");
+                var locationNodes = htmlDoc.DocumentNode.SelectNodes("//b[normalize-space(text())='Location']");
+
+                if (violationNodes != null)
+                {
+                    foreach (var violationNode in violationNodes)
+                    {
+                        // Extract the violation number
+                        var violationNumber = violationNode.NextSibling.InnerText.Trim();
+                        sb.AppendLine($"Violation Number: {violationNumber}");
+                    }
+                }
+
+                if (locationNodes != null)
+                {
+                    foreach (var locationNode in locationNodes)
+                    {
+                        // Extract the location text and links
+                        var locationText = locationNode.ParentNode.InnerHtml;
+                        sb.AppendLine($"Location: {locationText}");
+                    }
+                }
+
+                // Set the extracted text to the TextBox
+                ParsedHtmlTextBox.Text = sb.ToString();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to parse HTML: {ex.Message}");
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+          
+            var BeforeItems = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
+            var AfterItems = AfterList.ItemsSource as IEnumerable<AfterItem>;
+
+            _viewModel.compareBeforeAfter(BeforeItems,AfterItems);
+        }
+
         private void BeforeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // 확인: 선택된 항목이 있는지 여부

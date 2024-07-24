@@ -1,14 +1,14 @@
 ﻿<Window x:Class="LDRA_Parser.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModel="clr-namespace:LDRA_Parser.ViewModel"
-        xmlns:local_2="clr-namespace:LDRA_Parser.Model"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1440">
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:viewModel="clr-namespace:LDRA_Parser.ViewModel"
+            xmlns:local_2="clr-namespace:LDRA_Parser.Model"
+            mc:Ignorable="d"
+            Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
-        <viewModel:MainViewModel/>
+        <viewModel:FileSystemViewModel/>
     </Window.DataContext>
     <Grid Height="884" VerticalAlignment="Top">
         <Grid.RowDefinitions>
@@ -75,7 +75,7 @@
         </Grid.Resources>-->
 
         <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,15,0" 
-                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0" Height="43"/>
+                    VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0" Height="43"/>
 
         <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,0" Grid.RowSpan="2">
 
@@ -192,9 +192,9 @@
             </ListView.ItemContainerStyle>
         </ListView>
 
-        <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2" MouseDoubleClick="AfterList_MouseDoubleClick">
+            <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2" MouseDoubleClick="AfterList_MouseDoubleClick">
 
-            <ListView.View>
+                <ListView.View>
                 <GridView>
                     <!-- 첫 번째 열 -->
                     <GridViewColumn Width="Auto">
@@ -308,15 +308,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <Button Grid.Column="1" Content="Compare" HorizontalAlignment="Left" Margin="553,32,0,0" VerticalAlignment="Top" Height="42" Width="52" Click="Button_Click_1"/>
 
-
-        
     </Grid>
-
-
 </Window>
-    
-    
-    
-
-    

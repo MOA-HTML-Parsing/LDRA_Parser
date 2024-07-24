@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using LDRA_Parser.Model;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
