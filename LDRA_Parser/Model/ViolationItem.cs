@@ -12,6 +12,8 @@ namespace LDRA_Parser.Model
         public string ViolationNumber { get; set; }
         public string Location { get; set; }
 
+        public int idNumber { get; set; }
+
         public bool IsSame(ViolationItem item)
         {
 

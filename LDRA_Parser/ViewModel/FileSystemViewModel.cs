@@ -293,18 +293,33 @@ namespace LDRA_Parser.ViewModel
                                     beforeItem.violationItems.Add(beforeViolationItem);
                                     beforeToRemove.Add(beforeViolationItem);
                                 }
+                                else
+                                {
+                                    break;
+                                }
+                                ////////
+                                Console.WriteLine("첫번째 for문 내부------------");
+                                Console.WriteLine(beforeToRemove.Count);
+                                Console.WriteLine(afterToRemove.Count);
+                                Console.WriteLine("------------");
+                                ////////
                             }
                             if (beforeToRemove.Count > 0)
                             {
                                 foreach (var item in beforeToRemove)
                                 {
+                                    Console.WriteLine("before 삭제가 두번되야됨------------");
+                                    Console.WriteLine("after VIolations : " + item.Location + " , " + item.ViolationNumber + " : " + item.idNumber);
                                     beforeViolations.Remove(item);
                                 }
                                 if (afterToRemove.Count > 0)
                                 {
-                                    foreach (var item in afterToRemove)
+                                    foreach (var item2 in afterToRemove)
                                     {
-                                        afterViolations.Remove(item);
+                                        Console.WriteLine("after 삭제가 두번되야됨------------");
+                                        Console.WriteLine("after VIolations : " + item2.Location + " , " + item2.ViolationNumber + " : " + item2.idNumber);
+                                        afterViolations.Remove(item2);
+                                        Console.WriteLine("afterViolation size " + afterViolations.Count);
                                     }
                                 }
                             }
@@ -314,6 +329,9 @@ namespace LDRA_Parser.ViewModel
                             }
                         }
 
+                        Console.WriteLine("after Violations가 있으면 안됨 " + afterViolations.Count);
+                        if(afterViolations.Count>0)
+                        Console.WriteLine("after VIolations : " + afterViolations.First().Location +" , "+ afterViolations.First().ViolationNumber + " : "+ afterViolations.First().idNumber);
                         foreach (var afterViolationItem in afterViolations)  // after에만 있고 before에는 없는거
                         {
                             afterItem.violationItems.Add(afterViolationItem);
@@ -404,26 +422,30 @@ namespace LDRA_Parser.ViewModel
             beforeViolations.Clear();
             afterViolations.Clear();
             // 추출된 각 매치를 처리합니다.
+            int id = 0; // 고유의 id번호 줄려고
             foreach (Match match in beforeMatches)
             {
+                id++;
                 string violationNumber = match.Groups[1].Value;
                 string location = match.Groups[2].Value;
                 string result = $"Violation Number : {violationNumber}     Location : {location}";
                 Console.WriteLine("before-------------------------------");
                 Console.WriteLine(violationNumber);
                 Console.WriteLine(location);
-                beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
+                beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, idNumber=id });
             }
             Console.WriteLine("before-------------------------------");
+            id = 0;
             foreach (Match match in afterMatches)
             {
+                id++;
                 string violationNumber = match.Groups[1].Value;
                 string location = match.Groups[2].Value;
                 string result = $"Violation Number : {violationNumber}     Location : {location}";
                 Console.WriteLine("after------------------------------");
                 Console.WriteLine(violationNumber);
                 Console.WriteLine(location);
-                afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
+                afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, idNumber = id });
             }
             Console.WriteLine("after------------------------------");
 
