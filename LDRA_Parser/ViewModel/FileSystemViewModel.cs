@@ -20,6 +20,7 @@ namespace LDRA_Parser.ViewModel
 {
     public class FileSystemViewModel : INotifyPropertyChanged
     {
+        private int flag;
         private FileSystemItem _selectedItem;
         private List<ViolationItem> beforeViolations;
         private List<ViolationItem> afterViolations;
@@ -260,27 +261,90 @@ namespace LDRA_Parser.ViewModel
                     count++;
                     if (beforeItem.LDRA_Code == afterItem.LDRA_Code) // LDRA_CODE가 같으면 내부까지 확인
                     {
+                        ////////
+                        Console.WriteLine("------------");
+                        Console.WriteLine(beforeItem.LDRA_Code);
+                        Console.WriteLine(beforeItem.LDRA_Code);
+                        Console.WriteLine("------------");
+                        ////////
+                        ///
                         popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
-                        ViolationItem beforeViolationItem = beforeViolations.Last();
-                        ViolationItem afterViolationItem = afterViolations.Last();
 
-                        //같으면 내부 더 확인
-                        //이 부분은 나중에
-                        if (!(beforeViolationItem.IsSame(afterViolationItem)))
+                        while (true)
                         {
+                            List<ViolationItem> beforeToRemove = new List<ViolationItem>();
+                            List<ViolationItem> afterToRemove = new List<ViolationItem>();
+                            foreach (var beforeViolationItem in beforeViolations)   // 내부까지 확인하는 이중 for문
+                            {                                                       // before에만 있고 after에는 없는거
+                                flag = 0;
+                                foreach (var afterViolationItem in afterViolations)
+                                {
+                                    if (beforeViolationItem.IsSame(afterViolationItem))
+                                    {
+                                        flag = 1;
+                                        beforeToRemove.Add(beforeViolationItem);
+                                        afterToRemove.Add(afterViolationItem);
+                                        break;
+                                    }
+
+                                }
+                                if (flag != 1)
+                                {
+                                    beforeItem.violationItems.Add(beforeViolationItem);
+                                    beforeToRemove.Add(beforeViolationItem);
+                                }
+                            }
+                            if (beforeToRemove.Count > 0)
+                            {
+                                foreach (var item in beforeToRemove)
+                                {
+                                    beforeViolations.Remove(item);
+                                }
+                                if (afterToRemove.Count > 0)
+                                {
+                                    foreach (var item in afterToRemove)
+                                    {
+                                        afterViolations.Remove(item);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        foreach (var afterViolationItem in afterViolations)  // after에만 있고 before에는 없는거
+                        {
+                            afterItem.violationItems.Add(afterViolationItem);
+                        }
+
+
+                        ////////
+                        Console.WriteLine("------------");
+                        Console.WriteLine(beforeItem.violationItems.Count);
+                        Console.WriteLine(afterItem.LDRA_Code); 
+                        Console.WriteLine(afterItem.violationItems.Count);
+                        Console.WriteLine("------------");
+                        ////////
+                        if (beforeItem.violationItems.Count != 0 || afterItem.violationItems.Count != 0)
+                        {
+                            
                             beforeit.Add(beforeItem);
                             afterit.Add(afterItem);
-                            
                         }
-                        
-
-
                         break; // 같은놈 있으니깐 for문 더 돌 필요 없다.
                     }
                     else
                     {
                         if (count == afterItems.Count())
                         {
+                            Console.WriteLine("else-------------------------------");
+                            popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue); //  여기서는 beforeItem만 쓴다, 함수인자 After도 필요해서 그냥 같이넣은거
+                            foreach (var beforeViolationItem in beforeViolations)   // 내부까지 확인하는 이중 for문
+                            {
+                                beforeItem.violationItems.Add(beforeViolationItem);
+                            }
                             beforeit.Add(beforeItem);
                             afterit.Add(null); // 칸 맞춰줄려고
                             //마지막까지 왔는데 같은 놈 없으면 바로 리스트에 집어넣는다.
@@ -303,6 +367,12 @@ namespace LDRA_Parser.ViewModel
                     }
                     if (count == beforeItems.Count())
                     {
+                        Console.WriteLine("else after-------------------------------");
+                        popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
+                        foreach (var afterViolationItem in afterViolations)   // 내부까지 확인하는 이중 for문
+                        {
+                            afterItem.violationItems.Add(afterViolationItem);
+                        }
                         afterit.Add(afterItem);
                         beforeit.Add(null); // 칸 맞춰줄려고
                         //마지막까지 왔는데 같은 놈 없으면 바로 리스트에 집어넣는다.
@@ -312,8 +382,8 @@ namespace LDRA_Parser.ViewModel
 
             BeforeVM.updateBeforeList(beforeit);
             AfterVM.updateAfterList(afterit);
-            parsedHLM.updateParsedHtmlList(beforeViolations);
-            parsedHLM.updateParsedHtmlList(afterViolations);
+            parsedHLM.updateParsedHtmlList(beforeViolations);  //여기로 오류띄우기 연결
+            parsedHLM.updateParsedHtmlList(afterViolations);  // 여기로 오류띄우기 연결
 
         }
 
@@ -331,24 +401,32 @@ namespace LDRA_Parser.ViewModel
             MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
 
 
-
+            beforeViolations.Clear();
+            afterViolations.Clear();
             // 추출된 각 매치를 처리합니다.
             foreach (Match match in beforeMatches)
             {
                 string violationNumber = match.Groups[1].Value;
                 string location = match.Groups[2].Value;
                 string result = $"Violation Number : {violationNumber}     Location : {location}";
+                Console.WriteLine("before-------------------------------");
+                Console.WriteLine(violationNumber);
+                Console.WriteLine(location);
                 beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
             }
+            Console.WriteLine("before-------------------------------");
             foreach (Match match in afterMatches)
             {
                 string violationNumber = match.Groups[1].Value;
                 string location = match.Groups[2].Value;
                 string result = $"Violation Number : {violationNumber}     Location : {location}";
+                Console.WriteLine("after------------------------------");
+                Console.WriteLine(violationNumber);
+                Console.WriteLine(location);
                 afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
             }
+            Console.WriteLine("after------------------------------");
 
-            
         }
 
     }
