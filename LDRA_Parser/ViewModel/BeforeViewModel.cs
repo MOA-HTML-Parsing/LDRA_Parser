@@ -160,6 +160,7 @@ namespace LDRA_Parser.ViewModel
             return false;
         }
 
+
         private bool isSelected;
         public bool IsSelected
         {

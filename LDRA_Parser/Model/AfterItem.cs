@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,15 +17,27 @@ namespace LDRA_Parser.Model
 
         public string HrefValue { get; set; }
 
-        public AfterItem(string violations, string code, string standards, string misraCode, string changedContent, string hrefValue)
+        public List<ViolationItem> violationItems { get; set; }
 
+        public AfterItem(string violations, string code, string standards, string misraCode, string changedContent, string hrefValue)
         {
             Number_of_Violations = violations;
             LDRA_Code = code;
             Rule_Standards = standards;
             MISRA_Code = misraCode;
-            Changed_Content = changedContent;
             HrefValue = hrefValue;
+            violationItems = new List<ViolationItem>(); 
+            Changed_Content = changedContent;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+           
+
         }
     }
 }

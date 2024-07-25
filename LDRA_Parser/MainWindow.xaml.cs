@@ -17,6 +17,7 @@ using HtmlAgilityPack;
 using LDRA_Parser.Model;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Diagnostics.Metrics;
 
 namespace LDRA_Parser
 {
@@ -180,6 +181,12 @@ namespace LDRA_Parser
                 // 정규 표현식을 사용하여 데이터를 추출합니다.
                 MatchCollection matches = Regex.Matches(htmlContent, pattern);
 
+
+                // 추출된 데이터를 저장할 리스트를 생성합니다.
+                var violations = new List<ViolationItem>();
+
+
+
                 foreach (Match match in matches)
                 {
                     string violationNumber = match.Groups[1].Value;
@@ -188,7 +195,11 @@ namespace LDRA_Parser
                 }
 
                 // ListBox에 데이터를 바인딩합니다.
+
+                ParsedHtmlListBox.ItemsSource = violations;
+
                 //ParsedHtmlListBox.ItemsSource = violations;
+
             }
             catch (Exception ex)
             {
@@ -200,11 +211,9 @@ namespace LDRA_Parser
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-          
             var BeforeItems = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
             var AfterItems = AfterList.ItemsSource as IEnumerable<AfterItem>;
-
-            _viewModel.compareBeforeAfter(BeforeItems,AfterItems);
+            _viewModel.compareBeforeAfter(BeforeItems, AfterItems);
         }
 
         private void BeforeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -336,8 +345,10 @@ namespace LDRA_Parser
                 }
             }
             return null;
+
         }
     }
-
 }
+
+
  
