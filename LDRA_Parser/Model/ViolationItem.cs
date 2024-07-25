@@ -14,12 +14,19 @@ namespace LDRA_Parser.Model
 
         public int idNumber { get; set; }
 
+        public string MainLocation { get; set; } // 추가
+        public string LineNumber { get; set; } // 추가
+
         public bool IsSame(ViolationItem item)
         {
 
             if (this.ViolationNumber != item.ViolationNumber) return false;
 
             else if (this.Location != item.Location) return false;
+
+            else if (this.MainLocation != item.MainLocation) return false;
+
+            else if (this.LineNumber != item.LineNumber) return false;
 
             return true;
 
