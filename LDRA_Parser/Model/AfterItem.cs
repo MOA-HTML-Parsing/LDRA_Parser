@@ -13,12 +13,13 @@ namespace LDRA_Parser.Model
         public string LDRA_Code { get; set; }
         public string Rule_Standards { get; set; }
         public string MISRA_Code { get; set; }
+        public string Changed_Content { get; set; }
 
         public string HrefValue { get; set; }
 
         public List<ViolationItem> violationItems { get; set; }
 
-        public AfterItem(string violations, string code, string standards, string misraCode, string hrefValue)
+        public AfterItem(string violations, string code, string standards, string misraCode, string changedContent, string hrefValue)
         {
             Number_of_Violations = violations;
             LDRA_Code = code;
@@ -26,6 +27,7 @@ namespace LDRA_Parser.Model
             MISRA_Code = misraCode;
             HrefValue = hrefValue;
             violationItems = new List<ViolationItem>(); 
+            Changed_Content = changedContent;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,6 +35,9 @@ namespace LDRA_Parser.Model
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+           
+
         }
     }
 }

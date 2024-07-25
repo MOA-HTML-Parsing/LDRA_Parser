@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HtmlAgilityPack;
 using LDRA_Parser.Model;
+using System.Xml;
 using System.Text.RegularExpressions;
 using System.Diagnostics.Metrics;
 
@@ -127,44 +128,45 @@ namespace LDRA_Parser
                 MessageBox.Show("Data saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var listViewItem = sender as ListViewItem;
-            if (listViewItem != null)
-            {
-                var item = listViewItem.Content as BeforeItem;
-                if (item != null && !string.IsNullOrEmpty(item.HrefValue))
-                {
-                    string baseDirectory = _viewModel.BaseDirectory;
-                    string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before");
-                    Console.WriteLine(baseDirectory);
-                    string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
+        //private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    var listViewItem = sender as ListViewItem;
+        //    if (listViewItem != null)
+        //    {
+        //        var item = listViewItem.Content as BeforeItem;
+        //        if (item != null && !string.IsNullOrEmpty(item.HrefValue))
+        //        {
+        //            string baseDirectory = _viewModel.BaseDirectory;
+        //            string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before");
+        //            Console.WriteLine(baseDirectory);
+        //            string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
 
-                    try
-                    {
-                        if (File.Exists(absolutePath))
-                        {
-                            ParseAndDisplayHtml(absolutePath);
-                        }
-                        else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
-                        {
-                            System.Diagnostics.Process.Start(item.HrefValue);
-                        }
-                        else
-                        {
-                            MessageBox.Show("File does not exist or invalid URL.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Failed to open link: {ex.Message}");
-                    }
-                }
-            }
-        }
+        //            try
+        //            {
+        //                if (File.Exists(absolutePath))
+        //                {
+        //                    ParseAndDisplayHtml(absolutePath);
+        //                }
+        //                else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
+        //                {
+        //                    System.Diagnostics.Process.Start(item.HrefValue);
+        //                }
+        //                else
+        //                {
+        //                    MessageBox.Show("File does not exist or invalid URL.");
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show($"Failed to open link: {ex.Message}");
+        //            }
+        //        }
+        //    }
+        //}
 
-        private void ParseAndDisplayHtml(string htmlFilePath)
+        private List<ViolationItem> ParseAndDisplayHtml(string htmlFilePath)
         {
+            var violations = new List<ViolationItem>();
             try
             {
                 HtmlDocument htmlDoc = new HtmlDocument();
@@ -179,8 +181,11 @@ namespace LDRA_Parser
                 // 정규 표현식을 사용하여 데이터를 추출합니다.
                 MatchCollection matches = Regex.Matches(htmlContent, pattern);
 
+
                 // 추출된 데이터를 저장할 리스트를 생성합니다.
                 var violations = new List<ViolationItem>();
+
+
 
                 foreach (Match match in matches)
                 {
@@ -190,65 +195,157 @@ namespace LDRA_Parser
                 }
 
                 // ListBox에 데이터를 바인딩합니다.
+
                 ParsedHtmlListBox.ItemsSource = violations;
+
+                //ParsedHtmlListBox.ItemsSource = violations;
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to parse HTML: {ex.Message}");
             }
+            Console.WriteLine(violations);
+            return violations;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
             var BeforeItems = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
             var AfterItems = AfterList.ItemsSource as IEnumerable<AfterItem>;
             _viewModel.compareBeforeAfter(BeforeItems, AfterItems);
-            //Console.WriteLine("gdgd");
-            //string beforeHtmlFilePath = @"C:\Users\user\Desktop\LDRA Code Review Report\Before\MMD_MUX_CWE_link_popup36S.htm";
-            //string afterHtmlFilePath = @"C:\Users\user\Desktop\LDRA Code Review Report\After\MMD_MUX_CWE_link_popup36S.htm";
+        }
 
+        private void BeforeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // 확인: 선택된 항목이 있는지 여부
+            if (BeforeList.SelectedItem != null)
+            {
+                // 선택된 항목의 ListViewItem을 가져옴
+                var selectedItem = BeforeList.ItemContainerGenerator.ContainerFromItem(BeforeList.SelectedItem) as ListViewItem;
 
-            //string beforeHtmlContent = File.ReadAllText(beforeHtmlFilePath);
-            //string afterHtmlContent = File.ReadAllText(afterHtmlFilePath);
+                if (selectedItem != null)
+                {
+                    // ListViewItem의 템플릿에서 ParsedHtmlListBox를 찾음
+                    var detailsTextBox = FindVisualChild<ListBox>(selectedItem, "ParsedHtmlListBox");
+                    var item = selectedItem.Content as BeforeItem;
 
-            //// 정규 표현식 패턴을 정의합니다.
-            //string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'";
+                    if (detailsTextBox != null)
+                    {
+                        string baseDirectory = _viewModel.BaseDirectory;
+                        string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before");
+                        Console.WriteLine(baseDirectory);
+                        string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
 
-            //// 정규 표현식을 사용하여 데이터를 추출합니다.
-            //MatchCollection beforeMatches = Regex.Matches(beforeHtmlContent, pattern);
-            //MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
+                        try
+                        {
+                            if (File.Exists(absolutePath))
+                            {
+                                detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath);
+                            }
+                            else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
+                            {
+                                System.Diagnostics.Process.Start(item.HrefValue);
+                            }
+                            else
+                            {
+                                MessageBox.Show("File does not exist or invalid URL.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Failed to open link: {ex.Message}");
+                        }
 
-            //// 추출된 데이터를 저장할 리스트를 생성합니다.
-            //List<string> beforeViolations = new List<string>();
-            //List<string> afterViolations = new List<string>();
+                        // 텍스트 박스의 현재 가시성 상태를 토글
+                        if (detailsTextBox.Visibility == Visibility.Visible)
+                        {
+                            Console.WriteLine("test1");
+                            detailsTextBox.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            detailsTextBox.Visibility = Visibility.Visible;
+                        }
+                    }
+                }
+            }
+        }
 
-            //// 추출된 각 매치를 처리합니다.
-            //foreach (Match match in beforeMatches)
-            //{
-            //    string violationNumber = match.Groups[1].Value;
-            //    string location = match.Groups[2].Value;
-            //    string result = $"Violation Number : {violationNumber}     Location : {location}";
-            //    beforeViolations.Add(result);
-            //}
-            //foreach (Match match in afterMatches)
-            //{
-            //    string violationNumber = match.Groups[1].Value;
-            //    string location = match.Groups[2].Value;
-            //    string result = $"Violation Number : {violationNumber}     Location : {location}";
-            //    afterViolations.Add(result);
-            //}
+        private void AfterList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // 확인: 선택된 항목이 있는지 여부
+            if (AfterList.SelectedItem != null)
+            {
+                // 선택된 항목의 ListViewItem을 가져옴
+                var selectedItem = AfterList.ItemContainerGenerator.ContainerFromItem(AfterList.SelectedItem) as ListViewItem;
 
-            //// 결과를 출력합니다.
-            //foreach (string violation in beforeViolations)
-            //{
-            //    Console.WriteLine(violation);
-            //}
-            //Console.WriteLine("gdgd");
-            //foreach (string violation in afterViolations)
-            //{
-            //    Console.WriteLine(violation);
-            //}
+                if (selectedItem != null)
+                {
+                    // ListViewItem의 템플릿에서 ParsedHtmlListBox를 찾음
+                    var detailsTextBox = FindVisualChild<ListBox>(selectedItem, "ParsedHtmlListBox");
+                    var item = selectedItem.Content as AfterItem;
+
+                    if (detailsTextBox != null)
+                    {
+                        string baseDirectory = _viewModel.BaseDirectory;
+                        string beforeDirectory = System.IO.Path.Combine(baseDirectory, "After");
+                        Console.WriteLine(baseDirectory);
+                        string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
+
+                        try
+                        {
+                            if (File.Exists(absolutePath))
+                            {
+                                detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath);
+                            }
+                            else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
+                            {
+                                System.Diagnostics.Process.Start(item.HrefValue);
+                            }
+                            else
+                            {
+                                MessageBox.Show("File does not exist or invalid URL.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Failed to open link: {ex.Message}");
+                        }
+
+                        // 텍스트 박스의 현재 가시성 상태를 토글
+                        if (detailsTextBox.Visibility == Visibility.Visible)
+                        {
+                            Console.WriteLine("test1");
+                            detailsTextBox.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            detailsTextBox.Visibility = Visibility.Visible;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 특정 자식 요소를 찾기 위한 헬퍼 메서드
+        private T FindVisualChild<T>(DependencyObject parent, string childName) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T tChild && ((FrameworkElement)child).Name == childName)
+                {
+                    return tChild;
+                }
+                var result = FindVisualChild<T>(child, childName);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
+
         }
     }
 }

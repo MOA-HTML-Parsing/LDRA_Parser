@@ -73,6 +73,8 @@ namespace LDRA_Parser.ViewModel
         
         public ParsedHtmlListModelI parsedHLM { get; private set; }
 
+        public ParsedHtmlListModelI parsedHLM { get; private set; }
+
         private string _baseDirectory;
         public string BaseDirectory
         {
@@ -90,6 +92,7 @@ namespace LDRA_Parser.ViewModel
             BeforeVM = new BeforeViewModel();
             AfterVM = new AfterViewModel();
             parsedHLM = new ParsedHtmlListModelI(); 
+
             // 추출된 데이터를 저장할 리스트를 생성합니다.
             beforeViolations = new List<ViolationItem>();
             afterViolations = new List<ViolationItem>();
@@ -226,7 +229,6 @@ namespace LDRA_Parser.ViewModel
             if (filePath.Contains(@"\Before\"))
             {
                 HtmlContent = fileContent;
-                
                 BeforeVM.LoadHtmlContent(filePath, _baseDirectory,"Before");
             }
             else if (filePath.Contains(@"\After\"))
@@ -399,6 +401,7 @@ namespace LDRA_Parser.ViewModel
 
             BeforeVM.updateBeforeList(beforeit);
             AfterVM.updateAfterList(afterit);
+
             parsedHLM.updateParsedHtmlList(beforeViolations);  //여기로 오류띄우기 연결
             parsedHLM.updateParsedHtmlList(afterViolations);  // 여기로 오류띄우기 연결
 

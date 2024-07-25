@@ -57,4 +57,5 @@ namespace LDRA_Parser.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
+
 }

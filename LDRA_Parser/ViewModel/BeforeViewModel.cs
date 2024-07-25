@@ -67,6 +67,7 @@ namespace LDRA_Parser.ViewModel
                                             cells[1].InnerText.Trim(),
                                             extractedText2.Trim(),
                                             extractedText3?.Trim(),
+                                            "Example",
                                             hrefValue
                                         );
                                         BeforeViewList.Add(item);
@@ -157,6 +158,27 @@ namespace LDRA_Parser.ViewModel
                 }
             }
             return false;
+        }
+
+
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                if (isSelected != value)
+                {
+                    isSelected = value;
+                    OnPropertyChanged(nameof(IsSelected));
+                    OnPropertyChanged(nameof(ShouldShowDetails)); // DetailsTextBox의 Visibility를 업데이트하기 위해 OnPropertyChanged 호출
+                }
+            }
+        }
+
+        public Visibility ShouldShowDetails
+        {
+            get { return IsSelected ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         private string ExtractHrefValue(HtmlNodeCollection cells, string baseDirectory, string folderName)
