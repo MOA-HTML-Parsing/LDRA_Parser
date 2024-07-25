@@ -181,12 +181,6 @@ namespace LDRA_Parser
                 // 정규 표현식을 사용하여 데이터를 추출합니다.
                 MatchCollection matches = Regex.Matches(htmlContent, pattern);
 
-
-                // 추출된 데이터를 저장할 리스트를 생성합니다.
-                var violations = new List<ViolationItem>();
-
-
-
                 foreach (Match match in matches)
                 {
                     string violationNumber = match.Groups[1].Value;
@@ -195,8 +189,6 @@ namespace LDRA_Parser
                 }
 
                 // ListBox에 데이터를 바인딩합니다.
-
-                ParsedHtmlListBox.ItemsSource = violations;
 
                 //ParsedHtmlListBox.ItemsSource = violations;
 

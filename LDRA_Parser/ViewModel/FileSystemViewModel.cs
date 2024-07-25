@@ -73,8 +73,6 @@ namespace LDRA_Parser.ViewModel
         
         public ParsedHtmlListModelI parsedHLM { get; private set; }
 
-        public ParsedHtmlListModelI parsedHLM { get; private set; }
-
         private string _baseDirectory;
         public string BaseDirectory
         {

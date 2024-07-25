@@ -217,29 +217,5 @@ namespace LDRA_Parser.ViewModel
                 MessageBox.Show("차이없음");
             }
         }
-
-        private string ExtractHrefValue(HtmlNodeCollection cells,string baseDirectory, string folderName)
-        {
-            
-            string targetDirectory = System.IO.Path.Combine(baseDirectory, folderName);
-           
-            foreach (var cell in cells)
-            {
-                var aNodes = cell.SelectNodes(".//a[@href]");
-                if (aNodes != null)
-                {
-                    foreach (var aNode in aNodes)
-                    {
-                        string hrefValue = aNode.Attributes["href"].Value;
-                        if (Path.GetExtension(hrefValue) == ".htm")
-                        {
-                            string absolutePath = System.IO.Path.Combine(targetDirectory, hrefValue);
-                            return absolutePath;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
     }
 }
