@@ -54,7 +54,7 @@ namespace LDRA_Parser
         }
 
 
-        private void TextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void Import_Document(object sender, MouseButtonEventArgs e)
         {
             if (sender is TextBlock textBlock && textBlock.DataContext is FileSystemItem item)
             {
@@ -70,7 +70,7 @@ namespace LDRA_Parser
         /*
          * 저장하기
          */
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
             var items = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
             if (items != null)
@@ -166,7 +166,7 @@ namespace LDRA_Parser
             return violations;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_Compare(object sender, RoutedEventArgs e)
         {
             var BeforeItems = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
             var AfterItems = AfterList.ItemsSource as IEnumerable<AfterItem>;
@@ -199,11 +199,11 @@ namespace LDRA_Parser
                             if (File.Exists(absolutePath))
                             {
                                 
-                                //detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath); // List<ViolationItem>
-                                var beforeCompared = ParseAndDisplayHtml(absolutePath);
-                                var highlightList = _viewModel.highlightComparedList(beforeCompared); // 하이라이트를 적용할 리스트
+                                detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath); // List<ViolationItem>
+                                //var beforeCompared = ParseAndDisplayHtml(absolutePath);
+                                //var highlightList = _viewModel.highlightComparedList(item); // 하이라이트를 적용할 리스트
 
-                                detailsTextBox.ItemsSource = highlightList;
+                                //detailsTextBox.ItemsSource = highlightList;
 
                             }
                             else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))

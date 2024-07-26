@@ -26,6 +26,8 @@ namespace LDRA_Parser.ViewModel
         private FileSystemItem _selectedItem;
         private List<ViolationItem> beforeViolations;
         private List<ViolationItem> afterViolations;
+        private List<BeforeItem> beforeit = new List<BeforeItem>();
+        private List<AfterItem> afterit = new List<AfterItem>();
 
         public FileSystemItem SelectedItem
         {
@@ -102,23 +104,22 @@ namespace LDRA_Parser.ViewModel
         public void LoadDrives()
         {
             Items.Clear();
-            CommonOpenFileDialog cofd = new CommonOpenFileDialog();
-            cofd.IsFolderPicker = true;
-            if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+            using (CommonOpenFileDialog cofd = new CommonOpenFileDialog { IsFolderPicker = true })
             {
-                var driveItem = new FileSystemItem
+                if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    Name = cofd.FileName,
-                    FullPath = cofd.FileName,
-                    IsDirectory = true
-                };
+                    var driveItem = new FileSystemItem
+                    {
+                        Name = cofd.FileName,
+                        FullPath = cofd.FileName,
+                        IsDirectory = true
+                    };
 
-                BaseDirectory = cofd.FileName;
-
-                LoadChildren(driveItem);
-                Items.Add(driveItem);
+                    BaseDirectory = cofd.FileName;
+                    LoadChildren(driveItem);
+                    Items.Add(driveItem);
+                }
             }
-
 
         }
 
@@ -126,76 +127,65 @@ namespace LDRA_Parser.ViewModel
         {
             try
             {
-                item.Children.Clear(); // 기존 자식 항목을 지웁니다.
-
-                // 비동기적으로 폴더 내용을 로드합니다.
+                item.Children.Clear();
                 await Task.Run(() =>
                 {
-                    var directories = Directory.GetDirectories(item.FullPath);
-                    foreach (var directory in directories)
-                    {
-                        var dirItem = new FileSystemItem
-                        {
-                            Name = Path.GetFileName(directory),
-                            FullPath = directory,
-                            IsDirectory = true
-                        };
-
-                        // 하위 폴더와 파일을 로드합니다.
-                        LoadChildren(dirItem);
-
-                        // UI 스레드에서 컬렉션에 추가합니다.
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            item.Children.Add(dirItem);
-                        });
-                    }
-
-                    var files = Directory.GetFiles(item.FullPath);
-                    foreach (var file in files)
-                    {
-                        var fileItem = new FileSystemItem
-                        {
-                            Name = Path.GetFileName(file),
-                            FullPath = file,
-                            IsDirectory = false
-                        };
-
-                        // UI 스레드에서 컬렉션에 추가합니다.
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            item.Children.Add(fileItem);
-                        });
-                    }
+                    LoadDirectories(item);
+                    LoadFiles(item);
                 });
             }
             catch (Exception ex)
             {
-                // 예외 로그를 파일에 기록
-                string logMessage = $"Error loading children for {item.FullPath}: {ex.Message}\n";
-                LogToFile(logMessage);
+                LogToFile($"Error loading children for {item.FullPath}: {ex.Message}\n");
+            }
+        }
+
+        private void LoadDirectories(FileSystemItem item)
+        {
+            var directories = Directory.GetDirectories(item.FullPath);
+            foreach (var directory in directories)
+            {
+                var dirItem = new FileSystemItem
+                {
+                    Name = Path.GetFileName(directory),
+                    FullPath = directory,
+                    IsDirectory = true
+                };
+                LoadChildren(dirItem);
+                Application.Current.Dispatcher.Invoke(() => item.Children.Add(dirItem));
+            }
+        }
+
+        private void LoadFiles(FileSystemItem item)
+        {
+            var files = Directory.GetFiles(item.FullPath);
+            foreach (var file in files)
+            {
+                var fileItem = new FileSystemItem
+                {
+                    Name = Path.GetFileName(file),
+                    FullPath = file,
+                    IsDirectory = false
+                };
+                Application.Current.Dispatcher.Invoke(() => item.Children.Add(fileItem));
             }
         }
 
         private void LogToFile(string message)
         {
             string logFilePath = "error_log.txt";
-            bool isLogged = false;
-            int retryCount = 3;
-            int retryDelay = 1000; // 1 second
+            const int retryCount = 3;
+            const int retryDelay = 1000;
 
-            for (int i = 0; i < retryCount && !isLogged; i++)
+            for (int i = 0; i < retryCount; i++)
             {
                 try
                 {
-                    using (FileStream fileStream = new FileStream(logFilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                    using (var writer = new StreamWriter(new FileStream(logFilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
                     {
-                        using (StreamWriter writer = new StreamWriter(fileStream))
-                        {
-                            writer.WriteLine($"{DateTime.Now}: {message}");
-                        }
+                        writer.WriteLine($"{DateTime.Now}: {message}");
                     }
-                    isLogged = true;
+                    return;
                 }
                 catch (IOException ex)
                 {
@@ -203,14 +193,10 @@ namespace LDRA_Parser.ViewModel
                     System.Threading.Thread.Sleep(retryDelay);
                 }
             }
-
-            if (!isLogged)
-            {
-                Console.WriteLine("Failed to write to log file after multiple attempts.");
-            }
+            Console.WriteLine("Failed to write to log file after multiple attempts.");
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+       
 
         public void htmlView(FileSystemItem item)
         {
@@ -238,11 +224,7 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+     
 
         /*
          * 문서 비교 로직
@@ -250,161 +232,137 @@ namespace LDRA_Parser.ViewModel
         //Console.WriteLine(beforeItems.Equals(afterItem));
         public void compareBeforeAfter(IEnumerable<BeforeItem>? beforeItems, IEnumerable<AfterItem>? afterItems)
         {
-            List<BeforeItem> beforeit = new List<BeforeItem>();
-            List<AfterItem> afterit = new List<AfterItem>();
 
 
+            beforeit = new List<BeforeItem>();
+            afterit = new List<AfterItem>();
+            // BeforeItem과 AfterItem을 비교
             foreach (var beforeItem in beforeItems)
             {
-                int count = 0;
+                bool matchFound = false;
                 foreach (var afterItem in afterItems)
                 {
-                    count++;
-                    if (beforeItem.LDRA_Code == afterItem.LDRA_Code) // LDRA_CODE가 같으면 내부까지 확인
+                    if (beforeItem.LDRA_Code == afterItem.LDRA_Code)
                     {
-                        //////////
-                        //Console.WriteLine("------------");
-                        //Console.WriteLine(beforeItem.LDRA_Code);
-                        //Console.WriteLine(beforeItem.LDRA_Code);
-                        //Console.WriteLine("------------");
-                        //////////
-                        
-                        popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
-
-                        while (true)
+                        ProcessMatchingItems(beforeItem, afterItem);
+                        if (beforeItem.violationItems.Count > 0 || afterItem.violationItems.Count > 0)
                         {
-                            List<ViolationItem> beforeToRemove = new List<ViolationItem>();
-                            List<ViolationItem> afterToRemove = new List<ViolationItem>();
-                            foreach (var beforeViolationItem in beforeViolations)   // 내부까지 확인하는 이중 for문
-                            {                                                       // before에만 있고 after에는 없는거
-                                flag = 0;
-                                foreach (var afterViolationItem in afterViolations)
-                                {
-                                    if (beforeViolationItem.IsSame(afterViolationItem))
-                                    {
-                                        flag = 1;
-                                        beforeToRemove.Add(beforeViolationItem);
-                                        afterToRemove.Add(afterViolationItem);
-                                        break;
-                                    }
-
-                                }
-                                if (flag != 1)
-                                {
-                                    beforeItem.violationItems.Add(beforeViolationItem);
-                                    beforeToRemove.Add(beforeViolationItem);
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                                //////////
-                                //Console.WriteLine("첫번째 for문 내부------------");
-                                //Console.WriteLine(beforeToRemove.Count);
-                                //Console.WriteLine(afterToRemove.Count);
-                                //Console.WriteLine("------------");
-                                //////////
-                            }
-                            if (beforeToRemove.Count > 0)
-                            {
-                                foreach (var item in beforeToRemove)
-                                {
-                                    //Console.WriteLine("before 삭제가 두번되야됨------------");
-                                    //Console.WriteLine("after VIolations : " + item.Location + " , " + item.ViolationNumber + " : " + item.idNumber);
-                                    beforeViolations.Remove(item);
-                                }
-                                if (afterToRemove.Count > 0)
-                                {
-                                    foreach (var item2 in afterToRemove)
-                                    {
-                                        //Console.WriteLine("after 삭제가 두번되야됨------------");
-                                        //Console.WriteLine("after VIolations : " + item2.Location + " , " + item2.ViolationNumber + " : " + item2.idNumber);
-                                        afterViolations.Remove(item2);
-                                        //Console.WriteLine("afterViolation size " + afterViolations.Count);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                        ////Console.WriteLine("after Violations가 있으면 안됨 " + afterViolations.Count);
-                        //if(afterViolations.Count>0)
-                        //Console.WriteLine("after VIolations : " + afterViolations.First().Location +" , "+ afterViolations.First().ViolationNumber + " : "+ afterViolations.First().idNumber);
-                        foreach (var afterViolationItem in afterViolations)  // after에만 있고 before에는 없는거
-                        {
-                            afterItem.violationItems.Add(afterViolationItem);
-                        }
-
-
-                        ////////
-                        Console.WriteLine("------------");
-                        Console.WriteLine(beforeItem.violationItems.Count);
-                        Console.WriteLine(afterItem.LDRA_Code); 
-                        Console.WriteLine(afterItem.violationItems.Count);
-                        Console.WriteLine("------------");
-                        ////////
-                        if (beforeItem.violationItems.Count != 0 || afterItem.violationItems.Count != 0)
-                        {
-                            
                             beforeit.Add(beforeItem);
                             afterit.Add(afterItem);
                         }
-                        break; // 같은놈 있으니깐 for문 더 돌 필요 없다.
-                    }
-                    else
-                    {
-                        if (count == afterItems.Count())
-                        {
-                            Console.WriteLine("else-------------------------------");
-                            popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue); //  여기서는 beforeItem만 쓴다, 함수인자 After도 필요해서 그냥 같이넣은거
-                            foreach (var beforeViolationItem in beforeViolations)   // 내부까지 확인하는 이중 for문
-                            {
-                                beforeItem.violationItems.Add(beforeViolationItem);
-                            }
-                            beforeit.Add(beforeItem);
-                            afterit.Add(null); // 칸 맞춰줄려고
-                            //마지막까지 왔는데 같은 놈 없으면 바로 리스트에 집어넣는다.
-                        }
+                        matchFound = true;
+                        break;
                     }
                 }
+
+                if (!matchFound)
+                {
+                    ProcessNonMatchingBeforeItem(beforeItem, afterit);
+                    beforeit.Add(beforeItem);
+                }
             }
-            //------------------------------------------
-            //after기준에서 한번더 check
+
+            // AfterItem 기준으로도 비교
             foreach (var afterItem in afterItems)
             {
-                int count = 0;
-                foreach (var beforeItem in beforeItems)
+                if (beforeItems.All(beforeItem => beforeItem.LDRA_Code != afterItem.LDRA_Code))
                 {
-                    count++;
-                    if (beforeItem.LDRA_Code == afterItem.LDRA_Code) // LDRA_CODE가 같으면 내부까지 확인
-                    {
-                        //이미 before 검사할때 넣었으므로 이부분에서 걸리면 바로 continue
-                        break; // 같은놈 있으니깐 for문 더 돌 필요 없다.
-                    }
-                    if (count == beforeItems.Count())
-                    {
-                        Console.WriteLine("else after-------------------------------");
-                        popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
-                        foreach (var afterViolationItem in afterViolations)   // 내부까지 확인하는 이중 for문
-                        {
-                            afterItem.violationItems.Add(afterViolationItem);
-                        }
-                        afterit.Add(afterItem);
-                        beforeit.Add(null); // 칸 맞춰줄려고
-                        //마지막까지 왔는데 같은 놈 없으면 바로 리스트에 집어넣는다.
-                    }
+                    ProcessNonMatchingAfterItem(afterItem, beforeit);
+                    afterit.Add(afterItem);
                 }
             }
 
             BeforeVM.updateBeforeList(beforeit);
             AfterVM.updateAfterList(afterit);
+            parsedHLM.updateParsedHtmlList(beforeViolations);
+            parsedHLM.updateParsedHtmlList(afterViolations);
+        }
 
-            parsedHLM.updateParsedHtmlList(beforeViolations);  //여기로 오류띄우기 연결
-            parsedHLM.updateParsedHtmlList(afterViolations);  // 여기로 오류띄우기 연결
 
+
+        private void ProcessMatchingItems(BeforeItem beforeItem, AfterItem afterItem)
+        {
+            popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
+
+            while (true)
+            {
+                var beforeToRemove = new List<ViolationItem>();
+                var afterToRemove = new List<ViolationItem>();
+
+                foreach (var beforeViolationItem in beforeViolations)
+                {
+                    bool isMatched = false;
+                    foreach (var afterViolationItem in afterViolations)
+                    {
+                        if (beforeViolationItem.IsSame(afterViolationItem))
+                        {
+                            isMatched = true;
+                            beforeToRemove.Add(beforeViolationItem);
+                            afterToRemove.Add(afterViolationItem);
+                            break;
+                        }
+                    }
+
+                    if (!isMatched)
+                    {
+                        beforeItem.violationItems.Add(beforeViolationItem);
+                        beforeToRemove.Add(beforeViolationItem);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (beforeToRemove.Count > 0)
+                {
+                    RemoveViolations(beforeToRemove, afterToRemove);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            foreach (var afterViolationItem in afterViolations)
+            {
+                afterItem.violationItems.Add(afterViolationItem);
+            }
+        }
+
+        private void ProcessNonMatchingBeforeItem(BeforeItem beforeItem, List<AfterItem> afterit)
+        {
+            popupHTMLPasing(beforeItem.HrefValue, beforeItem.HrefValue);
+            foreach (var beforeViolationItem in beforeViolations)
+            {
+                beforeItem.violationItems.Add(beforeViolationItem);
+            }
+            afterit.Add(null); // 칸 맞추기
+        }
+
+        private void ProcessNonMatchingAfterItem(AfterItem afterItem, List<BeforeItem> beforeit)
+        {
+            popupHTMLPasing(afterItem.HrefValue, afterItem.HrefValue);
+            foreach (var afterViolationItem in afterViolations)
+            {
+                afterItem.violationItems.Add(afterViolationItem);
+            }
+            beforeit.Add(null); // 칸 맞추기
+        }
+
+        private void RemoveViolations(List<ViolationItem> beforeToRemove, List<ViolationItem> afterToRemove)
+        {
+            foreach (var item in beforeToRemove)
+            {
+                beforeViolations.Remove(item);
+            }
+            if (afterToRemove.Count > 0)
+            {
+                foreach (var item in afterToRemove)
+                {
+                    afterViolations.Remove(item);
+                }
+            }
         }
 
         public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
@@ -460,32 +418,50 @@ namespace LDRA_Parser.ViewModel
            
         }
 
-        public List<ViolationItem> highlightComparedList(List<ViolationItem> beforeCompareds)
+        public List<ViolationItem> highlightComparedList(BeforeItem beforeCompared)
         {
             Console.WriteLine("highlight function");
-            if (beforeViolations.Count == 0) // 아직 before과 after가 비교되지 전이라면
+            if (beforeit.Count == 0) // 아직 before과 after가 비교되지 전이라면
             {
                 Console.WriteLine("그대로 출력하는중..");
-                return beforeCompareds; // 기존 리스트를 그대로 출력
+                return beforeCompared.violationItems; // 기존 리스트를 그대로 출력
             }
             else
             {
                 Console.WriteLine("highlight test");
-                foreach (ViolationItem comparedItem in beforeViolations)
-                {
-                    foreach(ViolationItem beforeComparedItem in beforeCompareds)
-                    {
-                        if(comparedItem.ViolationNumber == beforeComparedItem.ViolationNumber && comparedItem.Location == beforeComparedItem.Location &&
-                            comparedItem.MainLocation == beforeComparedItem.MainLocation && comparedItem.LineNumber == beforeComparedItem.LineNumber) // 모두 같으면 하이라이트
-                        {
-                            beforeComparedItem.isDiff = true;
-                            Console.WriteLine("highlight");
-                        }
-                    }
-                }
+
+
+                //foreach (BeforeItem beforeItem in beforeCompared)
+                //{
+                //    foreach (BeforeItem comparedItem in beforeit)
+                //    {
+                //        //if(beforeItem == comparedItem)
+                //        //{
+
+                //        //}
+                //        //foreach (ViolationItem beforeComparedItem in beforeCompareds)
+                //        //{
+                //        //    if (comparedItem.ViolationNumber == beforeComparedItem.ViolationNumber && comparedItem.Location == beforeComparedItem.Location &&
+                //        //        comparedItem.MainLocation == beforeComparedItem.MainLocation && comparedItem.LineNumber == beforeComparedItem.LineNumber) // 모두 같으면 하이라이트
+                //        //    {
+                //        //        beforeComparedItem.isDiff = true;
+                //        //        Console.WriteLine("highlight");
+                //        //    }
+                //        //}
+                //    }
+                //}
+               
             }
-            return beforeCompareds;
+            return beforeCompared.violationItems;
         }
         
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 }
