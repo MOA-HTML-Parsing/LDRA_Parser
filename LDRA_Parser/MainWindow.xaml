@@ -108,6 +108,11 @@
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding Location}"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding MainLocation}"/>
+                                                            <TextBlock Text=" - "/>
+                                                            <TextBlock Text="{Binding LineNumber}"/>
+                                                        </StackPanel>
                                                         <Separator/>
                                                         <StackPanel.Style>
                                                             <Style TargetType="StackPanel">
@@ -208,6 +213,11 @@
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding Location}"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding MainLocation}"/>
+                                                            <TextBlock Text=" - "/>
+                                                            <TextBlock Text="{Binding LineNumber}"/>
+                                                        </StackPanel>
                                                         <Separator/>
                                                         <StackPanel.Style>
                                                             <Style TargetType="StackPanel">
