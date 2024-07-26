@@ -72,8 +72,6 @@ namespace LDRA_Parser.ViewModel
 
         public BeforeViewModel BeforeVM { get; private set; }
         public AfterViewModel AfterVM { get; private set; }
-        
-        public ParsedHtmlListModelI parsedHLM { get; private set; }
 
         private string _baseDirectory;
         public string BaseDirectory
@@ -91,7 +89,6 @@ namespace LDRA_Parser.ViewModel
             SelectedItem = new FileSystemItem();
             BeforeVM = new BeforeViewModel();
             AfterVM = new AfterViewModel();
-            parsedHLM = new ParsedHtmlListModelI(); 
 
             // 추출된 데이터를 저장할 리스트를 생성합니다.
             beforeViolations = new List<ViolationItem>();
@@ -272,8 +269,6 @@ namespace LDRA_Parser.ViewModel
 
             BeforeVM.updateBeforeList(beforeit);
             AfterVM.updateAfterList(afterit);
-            parsedHLM.updateParsedHtmlList(beforeViolations);
-            parsedHLM.updateParsedHtmlList(afterViolations);
         }
 
 
