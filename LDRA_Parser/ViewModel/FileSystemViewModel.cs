@@ -332,6 +332,8 @@ namespace LDRA_Parser.ViewModel
             {
                 beforeItem.violationItems.Add(beforeViolationItem);
             }
+            Console.WriteLine("안녕 나야");
+            Console.WriteLine(beforeItem);
             afterit.Add(null); // 칸 맞추기
         }
 
