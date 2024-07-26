@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections;
 using System.Text.RegularExpressions;
+using LDRA_Parser.Parser;
 //using System.Windows.Forms;
 
 
@@ -24,6 +25,7 @@ namespace LDRA_Parser.ViewModel
         private static int ViolationItemId = 0;
 
         private int flag;
+        private HtmlParser htmlParser;
         private FileSystemItem _selectedItem;
         private List<ViolationItem> beforeViolations;
         private List<ViolationItem> afterViolations;
@@ -92,6 +94,7 @@ namespace LDRA_Parser.ViewModel
             SelectedItem = new FileSystemItem();
             BeforeVM = new BeforeViewModel();
             AfterVM = new AfterViewModel();
+            htmlParser = new HtmlParser();
 
             // 추출된 데이터를 저장할 리스트를 생성합니다.
             beforeViolations = new List<ViolationItem>();
@@ -222,8 +225,11 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-     
 
+        public List<ViolationItem> popupHTMLPasing(string path)
+        {
+            return htmlParser.popupHTMLPasing(path);
+        }
         /*
          * 문서 비교 로직
          */
@@ -241,8 +247,12 @@ namespace LDRA_Parser.ViewModel
                     if (beforeItem.LDRA_Code == afterItem.LDRA_Code)
                     {
 
-                        popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
-
+                        //popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
+                        beforeViolations = htmlParser.popupHTMLPasing(beforeItem.HrefValue);
+                        Console.WriteLine("before coune : " + beforeViolations.Count);
+                        afterViolations = htmlParser.popupHTMLPasing(afterItem.HrefValue);
+                        
+                        Console.WriteLine("after coune : " + afterViolations.Count);
                         bool flag = false;
 
                         foreach (var beforeViolationItem in beforeViolations)
@@ -265,7 +275,6 @@ namespace LDRA_Parser.ViewModel
                         {
                             Console.WriteLine("오오오");
                             if (flag == true) break;
-
                             if (beforeViolationItem.isDiff == true) flag = true;
                         }
 
@@ -374,7 +383,7 @@ namespace LDRA_Parser.ViewModel
 
         private void ProcessNonMatchingBeforeItem(BeforeItem beforeItem, List<AfterItem> afterit)
         {
-            beforeViolations = popupHTMLPasing(beforeItem.HrefValue);
+            beforeViolations = htmlParser.popupHTMLPasing(beforeItem.HrefValue);
             foreach (var beforeViolationItem in beforeViolations)
             {
                 beforeItem.violationItems.Add(beforeViolationItem);
@@ -384,7 +393,7 @@ namespace LDRA_Parser.ViewModel
 
         private void ProcessNonMatchingAfterItem(AfterItem afterItem, List<BeforeItem> beforeit)
         {
-            afterViolations = popupHTMLPasing(afterItem.HrefValue);
+            afterViolations = htmlParser.popupHTMLPasing(afterItem.HrefValue);
             foreach (var afterViolationItem in afterViolations)
             {
                 afterItem.violationItems.Add(afterViolationItem);
@@ -393,97 +402,104 @@ namespace LDRA_Parser.ViewModel
         }
 
 
-        public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
-        {
-            // HTML 내용을 문자열로 읽어옵니다.
-            string beforeHtmlContent = File.ReadAllText(beforehtmlPath);
-            string afterHtmlContent = File.ReadAllText(afterhtmlPath);
+        //public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
+        //{
+        //    // HTML 내용을 문자열로 읽어옵니다.
+        //    string beforeHtmlContent = File.ReadAllText(beforehtmlPath);
+        //    string afterHtmlContent = File.ReadAllText(afterhtmlPath);
 
-            // 정규 표현식 패턴을 정의합니다.
-            string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'.*?>(.+?)</a> - <a href=.*?>(\d+)</a>";
-            // 정규 표현식을 사용하여 데이터를 추출합니다.
-            MatchCollection beforeMatches = Regex.Matches(beforeHtmlContent, pattern);
-            MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
+        //    // 정규 표현식 패턴을 정의합니다.
+        //    string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'.*?>(.+?)</a> - <a href=.*?>(\d+)</a>";
+        //    // 정규 표현식을 사용하여 데이터를 추출합니다.
+        //    MatchCollection beforeMatches = Regex.Matches(beforeHtmlContent, pattern);
+        //    MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
 
 
-            beforeViolations.Clear();
-            afterViolations.Clear();
-            // 추출된 각 매치를 처리합니다.
-            int id = 0; // 고유의 id번호 줄려고
-            foreach (Match match in beforeMatches)
-            {
-                id++;
-                string violationNumber = match.Groups[1].Value;
-                string location = match.Groups[2].Value;
-                string mainLocation = match.Groups[3].Value; // main
-                string lineNumber = match.Groups[4].Value; // 6
+        //    beforeViolations.Clear();
+        //    afterViolations.Clear();
+        //    // 추출된 각 매치를 처리합니다.
+        //    int id = 0; // 고유의 id번호 줄려고
+        //    foreach (Match match in beforeMatches)
+        //    {
+        //        id++;
+        //        string violationNumber = match.Groups[1].Value;
+        //        string location = match.Groups[2].Value;
+        //        string mainLocation = match.Groups[3].Value; // main
+        //        string lineNumber = match.Groups[4].Value; // 6
 
-                string result = $"Violation Number : {violationNumber}     Location : {location}";
-                //Console.WriteLine("before-------------------------------");
-                //Console.WriteLine(violationNumber);
-                //Console.WriteLine(location);
-                //Console.WriteLine(mainLocation);
-                //Console.WriteLine(lineNumber);
-                beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
-            }
-            id = 0;
-            foreach (Match match in afterMatches)
-            {
-                id++;
-                string violationNumber = match.Groups[1].Value;
-                string location = match.Groups[2].Value;
-                string mainLocation = match.Groups[3].Value; // main
-                string lineNumber = match.Groups[4].Value; // 6
+        //        string result = $"Violation Number : {violationNumber}     Location : {location}";
+        //        //Console.WriteLine("before-------------------------------");
+        //        //Console.WriteLine(violationNumber);
+        //        //Console.WriteLine(location);
+        //        //Console.WriteLine(mainLocation);
+        //        //Console.WriteLine(lineNumber);
+        //        beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
+        //    }
+        //    id = 0;
+        //    foreach (Match match in afterMatches)
+        //    {
+        //        id++;
+        //        string violationNumber = match.Groups[1].Value;
+        //        string location = match.Groups[2].Value;
+        //        string mainLocation = match.Groups[3].Value; // main
+        //        string lineNumber = match.Groups[4].Value; // 6
 
-                string result = $"Violation Number : {violationNumber}     Location : {location}";
-                //Console.WriteLine("after------------------------------");
-                //Console.WriteLine(violationNumber);
-                //Console.WriteLine(location);
-                //Console.WriteLine(mainLocation);
-                //Console.WriteLine(lineNumber);
-                afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
-            }
+        //        string result = $"Violation Number : {violationNumber}     Location : {location}";
+        //        //Console.WriteLine("after------------------------------");
+        //        //Console.WriteLine(violationNumber);
+        //        //Console.WriteLine(location);
+        //        //Console.WriteLine(mainLocation);
+        //        //Console.WriteLine(lineNumber);
+        //        afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
+        //    }
            
-        }
+        //}
 
-        public List<ViolationItem> highlightComparedList(BeforeItem beforeCompared)
+        public List<ViolationItem> beforeHighlightComparedList(BeforeItem beforeCompared)
         {
             Console.WriteLine("highlight function");
-            if (beforeit.Count == 0) // 아직 before과 after가 비교되지 전이라면
-            {
-                Console.WriteLine("그대로 출력하는중..");
-                return beforeCompared.violationItems; // 기존 리스트를 그대로 출력
-            }
-            else
+            if(beforeit.Count != 0)
             {
                 Console.WriteLine("highlight test");
+                foreach (BeforeItem beforeItem in beforeit)
+                {
+                    if(beforeItem == beforeCompared)
+                    {
+                        return beforeItem.violationItems;
+                    }
+                }
 
-
-                //foreach (BeforeItem beforeItem in beforeCompared)
-                //{
-                //    foreach (BeforeItem comparedItem in beforeit)
-                //    {
-                //        //if(beforeItem == comparedItem)
-                //        //{
-
-                //        //}
-                //        //foreach (ViolationItem beforeComparedItem in beforeCompareds)
-                //        //{
-                //        //    if (comparedItem.ViolationNumber == beforeComparedItem.ViolationNumber && comparedItem.Location == beforeComparedItem.Location &&
-                //        //        comparedItem.MainLocation == beforeComparedItem.MainLocation && comparedItem.LineNumber == beforeComparedItem.LineNumber) // 모두 같으면 하이라이트
-                //        //    {
-                //        //        beforeComparedItem.isDiff = true;
-                //        //        Console.WriteLine("highlight");
-                //        //    }
-                //        //}
-                //    }
-                //}
-               
             }
-            return beforeCompared.violationItems;
+            var parsingList = htmlParser.popupHTMLPasing(beforeCompared.HrefValue);
+            foreach (ViolationItem violationItem in parsingList)
+            {
+                violationItem.isDiff = false;
+            }
+            return parsingList;
         }
-        
 
+        public List<ViolationItem> afterHighlightComparedList(AfterItem afterCompared)
+        {
+            Console.WriteLine("highlight function");
+            if (afterit.Count != 0)
+            {
+                Console.WriteLine("highlight test");
+                foreach (AfterItem afterItem in afterit)
+                {
+                    if (afterItem == afterCompared)
+                    {
+                        return afterItem.violationItems;
+                    }
+                }
+
+            }
+            var parsingList = htmlParser.popupHTMLPasing(afterCompared.HrefValue);
+            foreach (ViolationItem violationItem in parsingList)
+            {
+                violationItem.isDiff = false;
+            }
+            return parsingList;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)

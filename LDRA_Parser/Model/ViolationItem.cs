@@ -35,6 +35,16 @@ namespace LDRA_Parser.Model
             isDiff = true; // 기본값 설정
         }
 
+        public ViolationItem(string violationNumber, string location, int idNumber, string mainLocation, string lineNumber, bool isDiff)
+        {
+            ViolationNumber = violationNumber;
+            Location = location;
+            this.idNumber = idNumber;
+            MainLocation = mainLocation;
+            LineNumber = lineNumber;
+            this.isDiff = isDiff; // 기본값 설정
+        }
+
         public bool IsSame(ViolationItem item)
         {
 

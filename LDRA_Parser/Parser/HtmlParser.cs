@@ -12,9 +12,10 @@ namespace LDRA_Parser.Parser
 {
     class HtmlParser
     {
-        private List<ViolationItem> violations = new List<ViolationItem>();
+        private List<ViolationItem> violations;
         public List<ViolationItem> popupHTMLPasing(string htmlPath)
         {
+            violations = new List<ViolationItem>();
             // HTML 내용을 문자열로 읽어옵니다.
             string HtmlContent = File.ReadAllText(htmlPath);
 
@@ -36,13 +37,14 @@ namespace LDRA_Parser.Parser
                 string lineNumber = match.Groups[4].Value; // 6
 
                 string result = $"Violation Number : {violationNumber}     Location : {location}";
-                Console.WriteLine(violationNumber);
-                Console.WriteLine(location);
-                Console.WriteLine(mainLocation);
-                Console.WriteLine(lineNumber);
+                //Console.WriteLine(violationNumber);
+                //Console.WriteLine(location);
+                //Console.WriteLine(mainLocation);
+                //Console.WriteLine(lineNumber);
                 violations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
             }
             Console.WriteLine("----------");
+            Console.WriteLine(violations.Count);
             return violations;
         }
     }
