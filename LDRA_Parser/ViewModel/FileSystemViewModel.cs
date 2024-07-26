@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections;
 using System.Text.RegularExpressions;
+using LDRA_Parser.Parser;
 
 
 
@@ -28,6 +29,7 @@ namespace LDRA_Parser.ViewModel
         private List<ViolationItem> afterViolations;
         private List<BeforeItem> beforeit = new List<BeforeItem>();
         private List<AfterItem> afterit = new List<AfterItem>();
+        private HtmlParser htmlParser;
 
         public FileSystemItem SelectedItem
         {
@@ -91,6 +93,7 @@ namespace LDRA_Parser.ViewModel
             SelectedItem = new FileSystemItem();
             BeforeVM = new BeforeViewModel();
             AfterVM = new AfterViewModel();
+            htmlParser = new HtmlParser();
 
             // 추출된 데이터를 저장할 리스트를 생성합니다.
             beforeViolations = new List<ViolationItem>();
@@ -362,55 +365,14 @@ namespace LDRA_Parser.ViewModel
 
         public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
         {
-            // HTML 내용을 문자열로 읽어옵니다.
-            string beforeHtmlContent = File.ReadAllText(beforehtmlPath);
-            string afterHtmlContent = File.ReadAllText(afterhtmlPath);
+                beforeViolations = htmlParser.popupHTMLPasing(beforehtmlPath);
+                afterViolations = htmlParser.popupHTMLPasing(afterhtmlPath);
 
-            // 정규 표현식 패턴을 정의합니다.
-            string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'.*?>(.+?)</a> - <a href=.*?>(\d+)</a>";
-            // 정규 표현식을 사용하여 데이터를 추출합니다.
-            MatchCollection beforeMatches = Regex.Matches(beforeHtmlContent, pattern);
-            MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
+        }
 
-
-            beforeViolations.Clear();
-            afterViolations.Clear();
-            // 추출된 각 매치를 처리합니다.
-            int id = 0; // 고유의 id번호 줄려고
-            foreach (Match match in beforeMatches)
-            {
-                id++;
-                string violationNumber = match.Groups[1].Value;
-                string location = match.Groups[2].Value;
-                string mainLocation = match.Groups[3].Value; // main
-                string lineNumber = match.Groups[4].Value; // 6
-
-                string result = $"Violation Number : {violationNumber}     Location : {location}";
-                //Console.WriteLine("before-------------------------------");
-                //Console.WriteLine(violationNumber);
-                //Console.WriteLine(location);
-                //Console.WriteLine(mainLocation);
-                //Console.WriteLine(lineNumber);
-                beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
-            }
-            id = 0;
-            foreach (Match match in afterMatches)
-            {
-                id++;
-                string violationNumber = match.Groups[1].Value;
-                string location = match.Groups[2].Value;
-                string mainLocation = match.Groups[3].Value; // main
-                string lineNumber = match.Groups[4].Value; // 6
-
-                string result = $"Violation Number : {violationNumber}     Location : {location}";
-                //Console.WriteLine("after------------------------------");
-                //Console.WriteLine(violationNumber);
-                //Console.WriteLine(location);
-                //Console.WriteLine(mainLocation);
-                //Console.WriteLine(lineNumber);
-                afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
-            }
-           
+        public List<ViolationItem> popupHTMLPasing(string Path)
+        {
+            return htmlParser.popupHTMLPasing(Path);
         }
 
         public List<ViolationItem> highlightComparedList(BeforeItem beforeCompared)

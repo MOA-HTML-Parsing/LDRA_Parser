@@ -129,43 +129,6 @@ namespace LDRA_Parser
             }
         }
 
-        private List<ViolationItem> ParseAndDisplayHtml(string htmlFilePath)
-        {
-            var violations = new List<ViolationItem>();
-            try
-            {
-                HtmlDocument htmlDoc = new HtmlDocument();
-                htmlDoc.Load(htmlFilePath);
-
-                // HTML 내용을 문자열로 읽어옵니다.
-                string htmlContent = File.ReadAllText(htmlFilePath);
-
-                // 정규 표현식 패턴을 정의합니다.
-                string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'";
-
-                // 정규 표현식을 사용하여 데이터를 추출합니다.
-                MatchCollection matches = Regex.Matches(htmlContent, pattern);
-
-                foreach (Match match in matches)
-                {
-                    string violationNumber = match.Groups[1].Value;
-                    string location = match.Groups[2].Value;
-                    violations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
-                }
-
-                // ListBox에 데이터를 바인딩합니다.
-
-                //ParsedHtmlListBox.ItemsSource = violations;
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to parse HTML: {ex.Message}");
-            }
-            Console.WriteLine(violations);
-            return violations;
-        }
-
         private void Button_Click_Compare(object sender, RoutedEventArgs e)
         {
             var BeforeItems = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
@@ -197,7 +160,7 @@ namespace LDRA_Parser
                             if (File.Exists(absolutePath))
                             {
                                 
-                                detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath); // List<ViolationItem>
+                                detailsTextBox.ItemsSource = _viewModel.popupHTMLPasing(absolutePath); // List<ViolationItem>
                                 //var beforeCompared = ParseAndDisplayHtml(absolutePath);
                                 //var highlightList = _viewModel.highlightComparedList(item); // 하이라이트를 적용할 리스트
 
@@ -248,7 +211,7 @@ namespace LDRA_Parser
                         {
                             if (File.Exists(absolutePath))
                             {
-                                detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath);
+                                detailsTextBox.ItemsSource = _viewModel.popupHTMLPasing(absolutePath);
                             }
                             else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
                             {
