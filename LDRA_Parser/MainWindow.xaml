@@ -109,6 +109,15 @@
                                                         <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding Location}"/>
                                                         <Separator/>
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding isDiff}" Value="True">
+                                                                        <Setter Property="Background" Value="Yellow"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
@@ -200,6 +209,15 @@
                                                         <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding Location}"/>
                                                         <Separator/>
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding isDiff}" Value="True">
+                                                                        <Setter Property="Background" Value="Yellow"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
