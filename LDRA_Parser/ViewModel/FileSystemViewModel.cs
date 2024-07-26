@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections;
 using System.Text.RegularExpressions;
+//using System.Windows.Forms;
 
 
 
@@ -229,8 +230,6 @@ namespace LDRA_Parser.ViewModel
         //Console.WriteLine(beforeItems.Equals(afterItem));
         public void compareBeforeAfter(IEnumerable<BeforeItem>? beforeItems, IEnumerable<AfterItem>? afterItems)
         {
-
-
             beforeit = new List<BeforeItem>();
             afterit = new List<AfterItem>();
             // BeforeItem과 AfterItem을 비교
@@ -241,9 +240,59 @@ namespace LDRA_Parser.ViewModel
                 {
                     if (beforeItem.LDRA_Code == afterItem.LDRA_Code)
                     {
-                        ProcessMatchingItems(beforeItem, afterItem);
+
+                        popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
+
+                        bool flag = false;
+
+                        foreach (var beforeViolationItem in beforeViolations)
+                        {
+                            if (!(beforeViolationItem.isDiff)) continue;
+                            foreach (var afterViolationItem in afterViolations)
+                            {
+                                if (!(afterViolationItem.isDiff)) continue;
+                                if (beforeViolationItem.IsSame(afterViolationItem))
+                                {
+                                    beforeViolationItem.isDiff = false;
+                                    afterViolationItem.isDiff = false;
+                                    break;
+                                }
+                                Console.WriteLine("엥??----");
+                            }
+                        }
+
+                        foreach (var beforeViolationItem in beforeViolations)
+                        {
+                            Console.WriteLine("오오오");
+                            if (flag == true) break;
+
+                            if (beforeViolationItem.isDiff == true) flag = true;
+                        }
+
+                        foreach (var afterViolationItem in afterViolations)
+                        {
+                            if (flag == true) break;
+                            if (afterViolationItem.isDiff == true) flag = true;
+                        }
+
+
+                        if (flag)
+                        {
+                            Console.WriteLine("오잉?");
+                            foreach (var beforeViolationItem in beforeViolations)
+                            {
+                                beforeItem.violationItems.Add(beforeViolationItem);
+                            }
+                            foreach (var afterViolationItem in afterViolations)
+                            {
+                                afterItem.violationItems.Add(afterViolationItem);
+                            }
+                        }
+
+                        Console.WriteLine("?????-------");
                         if (beforeItem.violationItems.Count > 0 || afterItem.violationItems.Count > 0)
                         {
+                            Console.WriteLine("다 어디갔어?-------");   
                             beforeit.Add(beforeItem);
                             afterit.Add(afterItem);
                         }
@@ -275,55 +324,53 @@ namespace LDRA_Parser.ViewModel
 
 
 
-        private void ProcessMatchingItems(BeforeItem beforeItem, AfterItem afterItem)
-        {
-            popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
+        //private void ProcessMatchingItems(BeforeItem beforeItem, AfterItem afterItem)
+        //{
+        //    popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
 
-            while (true)
-            {
-                var beforeToRemove = new List<ViolationItem>();
-                var afterToRemove = new List<ViolationItem>();
+        //    bool flag = false;
 
-                foreach (var beforeViolationItem in beforeViolations)
-                {
-                    bool isMatched = false;
-                    foreach (var afterViolationItem in afterViolations)
-                    {
-                        if (beforeViolationItem.IsSame(afterViolationItem))
-                        {
-                            isMatched = true;
-                            beforeToRemove.Add(beforeViolationItem);
-                            afterToRemove.Add(afterViolationItem);
-                            break;
-                        }
-                    }
+        //    foreach (var beforeViolationItem in beforeViolations)
+        //    {
+        //        if (!beforeViolationItem.isDiff) continue;
+        //        foreach (var afterViolationItem in afterViolations)
+        //        {
+        //            if (!afterViolationItem.isDiff) continue;
+        //            if (beforeViolationItem.IsSame(afterViolationItem))
+        //            { 
+        //                beforeViolationItem.isDiff = false;
+        //                afterViolationItem.isDiff = false;
+        //                break;
+        //            }
+        //        }
+        //    }
 
-                    if (!isMatched)
-                    {
-                        beforeItem.violationItems.Add(beforeViolationItem);
-                        beforeToRemove.Add(beforeViolationItem);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+        //    foreach (var beforeViolationItem in beforeViolations)
+        //    {
+        //        if (flag == true) break;
 
-                if (beforeToRemove.Count > 0)
-                {
-                    RemoveViolations(beforeToRemove, afterToRemove);
-                }
-                else
-                {
-                    break;
-                }
-            }
+        //        if(beforeViolationItem.isDiff == true) flag = true;
+        //    }
 
-            foreach (var afterViolationItem in afterViolations)
-            {
-                afterItem.violationItems.Add(afterViolationItem);
-            }
-        }
+        //    foreach (var afterViolationItem in afterViolations)
+        //    {
+        //        if (flag == true) break;
+        //        if (afterViolationItem.isDiff == true) flag = true;
+        //    }
+
+
+        //    if (flag)
+        //    {
+        //        foreach (var beforeViolationItem in beforeViolations)
+        //        {
+        //            beforeItem.violationItems.Add(beforeViolationItem);
+        //        }
+        //        foreach (var afterViolationItem in afterViolations)
+        //        {
+        //            afterItem.violationItems.Add(afterViolationItem);
+        //        }
+        //    }
+        //}
 
         private void ProcessNonMatchingBeforeItem(BeforeItem beforeItem, List<AfterItem> afterit)
         {
@@ -345,20 +392,6 @@ namespace LDRA_Parser.ViewModel
             beforeit.Add(null); // 칸 맞추기
         }
 
-        private void RemoveViolations(List<ViolationItem> beforeToRemove, List<ViolationItem> afterToRemove)
-        {
-            foreach (var item in beforeToRemove)
-            {
-                beforeViolations.Remove(item);
-            }
-            if (afterToRemove.Count > 0)
-            {
-                foreach (var item in afterToRemove)
-                {
-                    afterViolations.Remove(item);
-                }
-            }
-        }
 
         public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
         {

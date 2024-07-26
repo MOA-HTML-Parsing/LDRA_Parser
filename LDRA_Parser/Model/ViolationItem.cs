@@ -15,13 +15,13 @@ namespace LDRA_Parser.Model
         public string MainLocation { get; set; } // 추가
         public string LineNumber { get; set; } // 추가
 
-        public bool isDiff { get; set; } // 다른 항목에 하이라이트를 주기 위한 속성 default는 false
+        public bool isDiff { get; set; } // 다른 항목에 하이라이트를 주기 위한 속성 default는 true
 
         // 기본 생성자
         public ViolationItem()
         {
             // isDiff의 기본값 설정
-            isDiff = false;
+            isDiff = true;
         }
 
         // isDiff를 제외한 값들로 생성
@@ -32,7 +32,7 @@ namespace LDRA_Parser.Model
             this.idNumber = idNumber;
             MainLocation = mainLocation;
             LineNumber = lineNumber;
-            isDiff = false; // 기본값 설정
+            isDiff = true; // 기본값 설정
         }
 
         public bool IsSame(ViolationItem item)
