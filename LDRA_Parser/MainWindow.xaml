@@ -161,17 +161,7 @@
                                         <!-- 네 번째 열의 데이터 -->
                                         <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
 
-                                        <!-- 상세 정보 텍스트박스 -->
-                                        <!--<TextBox x:Name="DetailsTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,5,0,0" Visibility="Collapsed">
-                                            <TextBox.Text>
-                                                <MultiBinding StringFormat="{}{0}{1}{2}">
-                                                    <Binding Path="LDRA_Code"/>
-                                                    <Binding Path="Rule_Standards"/>
-                                                    <Binding Path="MISRA_Code"/>
-                                                    <Binding Path="Changed_Content"/>
-                                                </MultiBinding>
-                                            </TextBox.Text>
-                                        </TextBox>-->
+                                        <!-- 상세 정보 리스트박스 -->
                                         <ListBox x:Name="ParsedHtmlListBox" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="200" Visibility="Collapsed">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
@@ -179,7 +169,17 @@
                                                         <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
                                                         <TextBlock Text="{Binding Location}"/>
                                                         <Separator/>
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding isDiff}" Value="True">
+                                                                        <Setter Property="Background" Value="Yellow"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
                                                     </StackPanel>
+                                                    
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
                                         </ListBox>

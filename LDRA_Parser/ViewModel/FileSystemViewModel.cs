@@ -20,6 +20,8 @@ namespace LDRA_Parser.ViewModel
 {
     public class FileSystemViewModel : INotifyPropertyChanged
     {
+        private static int ViolationItemId = 0;
+
         private int flag;
         private FileSystemItem _selectedItem;
         private List<ViolationItem> beforeViolations;
@@ -458,5 +460,32 @@ namespace LDRA_Parser.ViewModel
            
         }
 
+        public List<ViolationItem> highlightComparedList(List<ViolationItem> beforeCompareds)
+        {
+            Console.WriteLine("highlight function");
+            if (beforeViolations.Count == 0) // 아직 before과 after가 비교되지 전이라면
+            {
+                Console.WriteLine("그대로 출력하는중..");
+                return beforeCompareds; // 기존 리스트를 그대로 출력
+            }
+            else
+            {
+                Console.WriteLine("highlight test");
+                foreach (ViolationItem comparedItem in beforeViolations)
+                {
+                    foreach(ViolationItem beforeComparedItem in beforeCompareds)
+                    {
+                        if(comparedItem.ViolationNumber == beforeComparedItem.ViolationNumber && comparedItem.Location == beforeComparedItem.Location &&
+                            comparedItem.MainLocation == beforeComparedItem.MainLocation && comparedItem.LineNumber == beforeComparedItem.LineNumber) // 모두 같으면 하이라이트
+                        {
+                            beforeComparedItem.isDiff = true;
+                            Console.WriteLine("highlight");
+                        }
+                    }
+                }
+            }
+            return beforeCompareds;
+        }
+        
     }
 }

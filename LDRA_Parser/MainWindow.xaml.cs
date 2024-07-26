@@ -128,41 +128,6 @@ namespace LDRA_Parser
                 MessageBox.Show("Data saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-        //private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    var listViewItem = sender as ListViewItem;
-        //    if (listViewItem != null)
-        //    {
-        //        var item = listViewItem.Content as BeforeItem;
-        //        if (item != null && !string.IsNullOrEmpty(item.HrefValue))
-        //        {
-        //            string baseDirectory = _viewModel.BaseDirectory;
-        //            string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before");
-        //            Console.WriteLine(baseDirectory);
-        //            string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
-
-        //            try
-        //            {
-        //                if (File.Exists(absolutePath))
-        //                {
-        //                    ParseAndDisplayHtml(absolutePath);
-        //                }
-        //                else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
-        //                {
-        //                    System.Diagnostics.Process.Start(item.HrefValue);
-        //                }
-        //                else
-        //                {
-        //                    MessageBox.Show("File does not exist or invalid URL.");
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show($"Failed to open link: {ex.Message}");
-        //            }
-        //        }
-        //    }
-        //}
 
         private List<ViolationItem> ParseAndDisplayHtml(string htmlFilePath)
         {
@@ -233,7 +198,13 @@ namespace LDRA_Parser
                         {
                             if (File.Exists(absolutePath))
                             {
-                                detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath);
+                                
+                                //detailsTextBox.ItemsSource = ParseAndDisplayHtml(absolutePath); // List<ViolationItem>
+                                var beforeCompared = ParseAndDisplayHtml(absolutePath);
+                                var highlightList = _viewModel.highlightComparedList(beforeCompared); // 하이라이트를 적용할 리스트
+
+                                detailsTextBox.ItemsSource = highlightList;
+
                             }
                             else if (Uri.IsWellFormedUriString(item.HrefValue, UriKind.Absolute))
                             {
