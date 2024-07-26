@@ -232,8 +232,6 @@ namespace LDRA_Parser.ViewModel
         //Console.WriteLine(beforeItems.Equals(afterItem));
         public void compareBeforeAfter(IEnumerable<BeforeItem>? beforeItems, IEnumerable<AfterItem>? afterItems)
         {
-
-
             beforeit = new List<BeforeItem>();
             afterit = new List<AfterItem>();
             // BeforeItem과 AfterItem을 비교
@@ -330,7 +328,7 @@ namespace LDRA_Parser.ViewModel
 
         private void ProcessNonMatchingBeforeItem(BeforeItem beforeItem, List<AfterItem> afterit)
         {
-            popupHTMLPasing(beforeItem.HrefValue, beforeItem.HrefValue);
+            beforeViolations = popupHTMLPasing(beforeItem.HrefValue);
             foreach (var beforeViolationItem in beforeViolations)
             {
                 beforeItem.violationItems.Add(beforeViolationItem);
@@ -340,7 +338,7 @@ namespace LDRA_Parser.ViewModel
 
         private void ProcessNonMatchingAfterItem(AfterItem afterItem, List<BeforeItem> beforeit)
         {
-            popupHTMLPasing(afterItem.HrefValue, afterItem.HrefValue);
+            afterViolations = popupHTMLPasing(afterItem.HrefValue);
             foreach (var afterViolationItem in afterViolations)
             {
                 afterItem.violationItems.Add(afterViolationItem);

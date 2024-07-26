@@ -12,7 +12,7 @@ namespace LDRA_Parser.Parser
 {
     class HtmlParser
     {
-        private List<ViolationItem> violations;
+        private List<ViolationItem> violations = new List<ViolationItem>();
         public List<ViolationItem> popupHTMLPasing(string htmlPath)
         {
             // HTML 내용을 문자열로 읽어옵니다.
