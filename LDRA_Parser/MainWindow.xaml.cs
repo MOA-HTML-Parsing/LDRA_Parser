@@ -175,7 +175,6 @@ namespace LDRA_Parser
 
         private void BeforeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // 확인: 선택된 항목이 있는지 여부
             if (BeforeList.SelectedItem != null)
             {
                 // 선택된 항목의 ListViewItem을 가져옴
@@ -191,7 +190,6 @@ namespace LDRA_Parser
                     {
                         string baseDirectory = _viewModel.BaseDirectory;
                         string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before");
-                        Console.WriteLine(baseDirectory);
                         string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
 
                         try
@@ -220,16 +218,8 @@ namespace LDRA_Parser
                             MessageBox.Show($"Failed to open link: {ex.Message}");
                         }
 
-                        // 텍스트 박스의 현재 가시성 상태를 토글
-                        if (detailsTextBox.Visibility == Visibility.Visible)
-                        {
-                            Console.WriteLine("test1");
-                            detailsTextBox.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            detailsTextBox.Visibility = Visibility.Visible;
-                        }
+                        // 리스트 박스의 가시성 상태를 토글
+                        detailsTextBox.Visibility = detailsTextBox.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                     }
                 }
             }
@@ -237,7 +227,6 @@ namespace LDRA_Parser
 
         private void AfterList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // 확인: 선택된 항목이 있는지 여부
             if (AfterList.SelectedItem != null)
             {
                 // 선택된 항목의 ListViewItem을 가져옴
@@ -252,9 +241,8 @@ namespace LDRA_Parser
                     if (detailsTextBox != null)
                     {
                         string baseDirectory = _viewModel.BaseDirectory;
-                        string beforeDirectory = System.IO.Path.Combine(baseDirectory, "After");
-                        Console.WriteLine(baseDirectory);
-                        string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
+                        string afterDirectory = System.IO.Path.Combine(baseDirectory, "After");
+                        string absolutePath = System.IO.Path.Combine(afterDirectory, item.HrefValue);
 
                         try
                         {
@@ -276,16 +264,8 @@ namespace LDRA_Parser
                             MessageBox.Show($"Failed to open link: {ex.Message}");
                         }
 
-                        // 텍스트 박스의 현재 가시성 상태를 토글
-                        if (detailsTextBox.Visibility == Visibility.Visible)
-                        {
-                            Console.WriteLine("test1");
-                            detailsTextBox.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            detailsTextBox.Visibility = Visibility.Visible;
-                        }
+                        // 리스트 박스의 가시성 상태를 토글
+                        detailsTextBox.Visibility = detailsTextBox.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                     }
                 }
             }
