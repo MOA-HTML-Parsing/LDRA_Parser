@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Formats.Asn1;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LDRA_Parser.Model
 {
+    /**
+     *  PopUp(상세에러) 을 담기 위한 클래스
+     */
     public class ViolationItem
     {
-        public string ViolationNumber { get; set; }
-        public string Location { get; set; }
-        public int idNumber { get; set; }
-        public string MainLocation { get; set; } // 추가
-        public string LineNumber { get; set; } // 추가
+        public string ViolationNumber { get; set; } // Number_of_Violations 클릭 시 연결되는 세부 문서의 해당하는 데이터를 담는 변수
+        public string Location { get; set; } // Number_of_Violations 클릭 시 연결되는 세부 문서의 해당하는 데이터를 담는 변수
+        public int idNumber { get; set; } // Number_of_Violations 클릭 시 연결되는 세부 문서의 해당하는 데이터를 담는 변수
+        public string MainLocation { get; set; } // Number_of_Violations 클릭 시 연결되는 세부 문서의 해당하는 데이터를 담는 변수
+        public string LineNumber { get; set; } // Number_of_Violations 클릭 시 연결되는 세부 문서의 해당하는 데이터를 담는 변수
 
         public bool isDiff { get; set; } // 다른 항목에 하이라이트를 주기 위한 속성 default는 true
 
@@ -45,6 +42,10 @@ namespace LDRA_Parser.Model
             this.isDiff = isDiff; // 기본값 설정
         }
 
+        /**
+         * 같은지 여부를 비교할때 사용하는 함수
+         * ViolationNumber, Location, MainLocation, LineNumber가 동일한지 확인한다.
+         */
         public bool IsSame(ViolationItem item)
         {
 

@@ -35,6 +35,10 @@ namespace LDRA_Parser
             _viewModel = DataContext as FileSystemViewModel;
         }
 
+        /**
+         * LoadFiles를 클릭했을때 실행된다.
+         * 폴더구조를 트리형태로 나타낸다. 
+         */
         private void OnLoadFilesClicked(object sender, RoutedEventArgs e)
         {
             if (_viewModel != null)
@@ -69,25 +73,18 @@ namespace LDRA_Parser
 
         /*
          * 저장하기
+         * 미완성입니다!!
          */
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            var items = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
-            if (items != null)
-            {
-                var htmlContent = GenerateHtml(items);
-                SaveHtmlToFile(htmlContent);
-            }
+            //var items = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
+            //if (items != null)
+            //{
+            //    var htmlContent = GenerateHtml(items);
+            //    SaveHtmlToFile(htmlContent);
+            //}
 
         }
-
-        /*
-        public string Number_of_Violations { get; set; }    
-        public string LDRA_Code { get; set; }
-        public string Rule_Standards { get; set; }
-        public string MISRA_Code { get; set; }
-
-         */
 
         private string GenerateHtml(IEnumerable<BeforeItem> items)
         {
@@ -129,42 +126,6 @@ namespace LDRA_Parser
             }
         }
 
-        //private List<ViolationItem> ParseAndDisplayHtml(string htmlFilePath)
-        //{
-        //    var violations = new List<ViolationItem>();
-        //    try
-        //    {
-        //        HtmlDocument htmlDoc = new HtmlDocument();
-        //        htmlDoc.Load(htmlFilePath);
-
-        //        // HTML 내용을 문자열로 읽어옵니다.
-        //        string htmlContent = File.ReadAllText(htmlFilePath);
-
-        //        // 정규 표현식 패턴을 정의합니다.
-        //        string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'";
-
-        //        // 정규 표현식을 사용하여 데이터를 추출합니다.
-        //        MatchCollection matches = Regex.Matches(htmlContent, pattern);
-
-        //        foreach (Match match in matches)
-        //        {
-        //            string violationNumber = match.Groups[1].Value;
-        //            string location = match.Groups[2].Value;
-        //            violations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location });
-        //        }
-
-        //        // ListBox에 데이터를 바인딩합니다.
-
-        //        //ParsedHtmlListBox.ItemsSource = violations;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Failed to parse HTML: {ex.Message}");
-        //    }
-        //    Console.WriteLine(violations);
-        //    return violations;
-        //}
 
         private void Button_Click_Compare(object sender, RoutedEventArgs e)
         {
@@ -188,15 +149,14 @@ namespace LDRA_Parser
 
                     if (detailsTextBox != null) // 세부 내용이 담길 모듈을 찾았다면 내부 코드 실행
                     {
-                        string baseDirectory = _viewModel.BaseDirectory;
-                        string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before");
-                        string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue);
+                        string baseDirectory = _viewModel.BaseDirectory; // 선택한 폴더의 주소
+                        string beforeDirectory = System.IO.Path.Combine(baseDirectory, "Before"); // 선택한 폴더와 Before 폴더 결합
+                        string absolutePath = System.IO.Path.Combine(beforeDirectory, item.HrefValue); // 결합된 주소와 상세 html 파일 주소 결합
 
                         try
                         {
                             if (File.Exists(absolutePath)) // 경로에 파일이 존재한다면
                             {
-                              
                                 var highlightList = _viewModel.beforeHighlightComparedList(item); // 하이라이트를 적용할 리스트
                                 foreach(var highlights in highlightList)
                                 {
@@ -241,9 +201,9 @@ namespace LDRA_Parser
 
                     if (detailsTextBox != null)
                     {
-                        string baseDirectory = _viewModel.BaseDirectory;
-                        string afterDirectory = System.IO.Path.Combine(baseDirectory, "After");
-                        string absolutePath = System.IO.Path.Combine(afterDirectory, item.HrefValue);
+                        string baseDirectory = _viewModel.BaseDirectory; // 선택한 폴더의 주소
+                        string afterDirectory = System.IO.Path.Combine(baseDirectory, "After"); // 선택한 폴더와 After 폴더 결합
+                        string absolutePath = System.IO.Path.Combine(afterDirectory, item.HrefValue); // 결합된 주소와 상세 html 파일 주소 결합
 
                         try
                         {
