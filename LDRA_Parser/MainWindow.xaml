@@ -4,13 +4,267 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:LDRA_Parser.ViewModel"
+        xmlns:local_2="clr-namespace:LDRA_Parser.Model"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1024" Width="1440">
+        Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
-        <viewModel:MainViewModel/>
+        <viewModel:FileSystemViewModel/>   <!-- 해당 창에서 FileSystemViewModel을 바인딩 -->
     </Window.DataContext>
-    <Grid>
-        <Button Content="Upload HTML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="30" Command="{Binding UploadCommand}"/>
-        <TextBox Text="{Binding HtmlContent}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,10,10" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True"/>
+    <Grid Height="884" VerticalAlignment="Top"> <!-- 창을 그리드형태로 분할하여 각각의 뷰를 배치 -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="650*"/>
+            <RowDefinition Height="250*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="620*"/>
+            <ColumnDefinition Width="421*"/>
+            <ColumnDefinition Width="199*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 폴더 불러오기 버튼 -->
+        <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,0,0" 
+                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0"/>
+
+        <!-- 불러온 폴더의 구조를 출력하는 TreeView -->
+        <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,10" Grid.RowSpan="2">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
+                    <TextBlock x:Name="input_textblock" MouseRightButtonDown="Import_Document" Text="{Binding Name}" />
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+
+        <!-- Before 폴더의 파일을 파싱하여 리스트 형태로 출력하는 ListView -->
+        <ListView x:Name="BeforeList" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10" Grid.Column="1" MouseDoubleClick="BeforeList_MouseDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <!-- 각각의 칼럼을 출력하는 텍스트 블럭 -->
+                    <GridViewColumn Width="140">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Number of Violations" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Number_of_Violations}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="LDRA Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LDRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="300">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Rule Standards" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Rule_Standards}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="150">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="MISRA-C:2004 Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Padding="5" Margin="2">
+                                    <!-- 각 칼럼에 해당하는 데이터가 바인딩되는 부분 -->
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="300"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Number_of_Violations}" Grid.Column="0" Margin="5" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding LDRA_Code}" Grid.Column="1" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Rule_Standards}" Grid.Column="2" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding MISRA_Code}" Grid.Column="3" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        </Grid>
+                                        <!-- 하나의 아이템 내부 문서를 파싱하여 내부의 ListBox에 세부 내용을 담는 부분 -->
+                                        <ListBox x:Name="ParsedHtmlListBox" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="200" Visibility="Collapsed" Grid.ColumnSpan="4">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Location}"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding MainLocation}"/>
+                                                            <TextBlock Text=" - "/>
+                                                            <TextBlock Text="{Binding LineNumber}"/>
+                                                        </StackPanel>
+                                                        <Separator/>
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Style.Triggers>
+                                                                    <!-- 세부 내용에서 Before와 After가 다르다면 트리거를 작동시켜 노란색으로 칠함 -->
+                                                                    <DataTrigger Binding="{Binding isDiff}" Value="True">
+                                                                        <Setter Property="Background" Value="Yellow"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <!-- 마우스가 해당 아이템 위로 올라가면 트리거를 작동시켜 배경색을 칠함 -->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="LightYellow"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+        <!-- After 폴더에서 파일을 파싱할 경우 출력하는 ListView로 내부 코드 구조는 Before ListVeiw와 동일 -->
+        <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2" MouseDoubleClick="AfterList_MouseDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="140">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Number of Violations" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Number_of_Violations}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="LDRA Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LDRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="300">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="Rule Standards" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Rule_Standards}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="150">
+                        <GridViewColumn.Header>
+                            <TextBlock Text="MISRA-C:2004 Code" Margin="5" FontWeight="Bold"/>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding MISRA_Code}" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Padding="5" Margin="2">
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="300"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Number_of_Violations}" Grid.Column="0" Margin="5" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding LDRA_Code}" Grid.Column="1" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Rule_Standards}" Grid.Column="2" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding MISRA_Code}" Grid.Column="3" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        </Grid>
+                                        <!-- Details ListBox -->
+                                        <ListBox x:Name="ParsedHtmlListBox" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="200" Visibility="Collapsed" Grid.ColumnSpan="4">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding ViolationNumber}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Location}"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding MainLocation}"/>
+                                                            <TextBlock Text=" - "/>
+                                                            <TextBlock Text="{Binding LineNumber}"/>
+                                                        </StackPanel>
+                                                        <Separator/>
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding isDiff}" Value="True">
+                                                                        <Setter Property="Background" Value="Yellow"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="LightYellow"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+        <!-- Before ListView에 해당하는 라벨 -->
+        <Label Content="BEFORE" HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top" Grid.Column="1" FontSize="16" />
+        <!-- Before ListView에 해당하는 라벨 -->
+        <Label Content="AFTER" HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top" FontSize="16" Grid.Column="2" Grid.ColumnSpan="2"/>
+        <!-- 결과를 출력하는 ListView 내용을 저장하는 버튼 -->
+        <Button  Content="Save" FontSize="16" Padding="10" VerticalAlignment="Top" Margin="13,10,15,00" Grid.Column="3" Grid.Row="1" Click="Save_Click"/>
+        <!-- Before ListView와 After ListView를 비교한 내용을 출력하는 ListView -->
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="20,10,45,10" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <!-- Before ListView와 After ListView를 비교하여 차이를 출력시키는 버튼 -->
+        <Button Grid.Column="2" Grid.ColumnSpan="2" Content="Compare" FontSize="16" HorizontalAlignment="Right" Margin="0,30,15,0" VerticalAlignment="Top" Padding="10" Click="Button_Click_Compare"/>
+
     </Grid>
 </Window>
