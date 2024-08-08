@@ -24,19 +24,19 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
-        public BeforeViewModel()
+        public BeforeViewModel() // Before ViewModel의 생성자
         {
             BeforeViewList = new ObservableCollection<BeforeItem>();
         }
 
-        public void LoadHtmlContent(string filePath, string baseDirectory, string folderName)
+        public void LoadHtmlContent(string filePath, string baseDirectory, string folderName) // HTML 콘텐츠 로드 및 파싱 메소드
         {
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.Load(filePath);
 
-            var tables = htmlDocument.DocumentNode.SelectNodes("//table");
+            var tables = htmlDocument.DocumentNode.SelectNodes("//table"); // 문서의 모든 table 태그 선택
 
-            if (tables != null)
+            if (tables != null) // 테이블이 null이 아니면 각 테이블을 반복해서 돌면서 태그 안의 내용을 파싱해 AfterItem에 저장
             {
                 foreach (var table in tables)
                 {
@@ -81,7 +81,7 @@ namespace LDRA_Parser.ViewModel
             OnPropertyChanged("BeforeViewList");
         }
 
-        public void updateBeforeList(List<BeforeItem> beforeit)
+        public void updateBeforeList(List<BeforeItem> beforeit) // 새로운 BeforeItem 객체 목록으로 BeforeViewList를 업데이트하는 메서드
         {
             BeforeViewList = new ObservableCollection<BeforeItem>();
             if (beforeit != null)
@@ -139,18 +139,18 @@ namespace LDRA_Parser.ViewModel
             return cell.InnerText.Trim();
         }
 
-        private bool ContainsHyperlink(HtmlNodeCollection cells)
+        private bool ContainsHyperlink(HtmlNodeCollection cells) // 셀에 하이퍼링크가 포함되어있는지 확인하는 메소드
         {
             foreach (var cell in cells)
             {
-                var aNodes = cell.SelectNodes(".//a[@href]");
+                var aNodes = cell.SelectNodes(".//a[@href]"); // href를 가지는 모든 a 태그 선택
                 if (aNodes != null)
                 {
                     foreach (var aNode in aNodes)
                     {
                         string hrefValue = aNode.Attributes["href"].Value;
-                        if (Path.GetExtension(hrefValue) == ".htm")
-                        {
+                        if (Path.GetExtension(hrefValue) == ".htm") // href 값이 .htm 확장자를 가지고 있는지 확인
+                            {
                             Console.WriteLine($"Found hrefValue: {hrefValue}");
                             return true;
                         }
@@ -181,19 +181,19 @@ namespace LDRA_Parser.ViewModel
             get { return IsSelected ? Visibility.Visible : Visibility.Collapsed; }
         }
 
-        private string ExtractHrefValue(HtmlNodeCollection cells, string baseDirectory, string folderName)
+        private string ExtractHrefValue(HtmlNodeCollection cells, string baseDirectory, string folderName) // 상세 href를 추출하는 메소드
         {
-            string targetDirectory = System.IO.Path.Combine(baseDirectory, folderName);
+            string targetDirectory = System.IO.Path.Combine(baseDirectory, folderName); // 기본 디렉토리와 폴더 이름을 결합
 
             foreach (var cell in cells)
             {
-                var aNodes = cell.SelectNodes(".//a[@href]");
+                var aNodes = cell.SelectNodes(".//a[@href]"); // href를 가지는 모든 a 태그 선택
                 if (aNodes != null)
                 {
                     foreach (var aNode in aNodes)
                     {
                         string hrefValue = aNode.Attributes["href"].Value;
-                        if (Path.GetExtension(hrefValue) == ".htm")
+                        if (Path.GetExtension(hrefValue) == ".htm") // 확장자가 .htm이면 상세 디렉토리와 상세 html 주소 결합
                         {
                             string absolutePath = System.IO.Path.Combine(targetDirectory, hrefValue);
                             return absolutePath;

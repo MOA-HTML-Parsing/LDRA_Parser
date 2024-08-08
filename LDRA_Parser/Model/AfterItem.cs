@@ -15,7 +15,7 @@ namespace LDRA_Parser.Model
         public string MISRA_Code { get; set; }
         public string Changed_Content { get; set; }
 
-        public string HrefValue { get; set; }
+        public string HrefValue { get; set; } // 상세 html 파일 주소
 
         public List<ViolationItem> violationItems { get; set; }
 
