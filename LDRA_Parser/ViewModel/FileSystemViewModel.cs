@@ -102,6 +102,10 @@ namespace LDRA_Parser.ViewModel
         }
 
 
+        /**
+         * OnLoadFilesClicked 을 클릭했을때 실행되는 첫번째 함수
+         * 드라이버를 불러온다.
+         */
         public void LoadDrives()
         {
             Items.Clear();
@@ -124,6 +128,10 @@ namespace LDRA_Parser.ViewModel
 
         }
 
+        /**
+         * LoadDrives()로부터 호출된다.
+         * 특정 드라이버 밑의 폴더구조를 전부 불러오기 위해 사용된다.
+         */
         private async void LoadChildren(FileSystemItem item)
         {
             try
@@ -141,6 +149,10 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
+        /**
+        * LoadChildren()으로 부터 사용된다.
+        * 디렉터리를 불러오기 위해 사용된다.
+        */
         private void LoadDirectories(FileSystemItem item)
         {
             var directories = Directory.GetDirectories(item.FullPath);
@@ -157,6 +169,10 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
+        /**
+        * LoadChildren()으로 부터 사용된다.
+        * 파일을 불러오기 위해 사용된다.
+        */
         private void LoadFiles(FileSystemItem item)
         {
             var files = Directory.GetFiles(item.FullPath);
@@ -172,6 +188,10 @@ namespace LDRA_Parser.ViewModel
             }
         }
 
+        /**
+         * LoadChildren(FileSystemItem item) 가 호출될 때
+         * 에러가 발생할 경우 처리해주기 위해 사용된다.(에러 예시 - 이미 파일이 열려 있을때 등)
+         */
         private void LogToFile(string message)
         {
             string logFilePath = "error_log.txt";
@@ -230,50 +250,44 @@ namespace LDRA_Parser.ViewModel
         {
             return htmlParser.popupHTMLPasing(path);
         }
+
         /*
          * 문서 비교 로직
          */
-        //Console.WriteLine(beforeItems.Equals(afterItem));
         public void compareBeforeAfter(IEnumerable<BeforeItem>? beforeItems, IEnumerable<AfterItem>? afterItems)
         {
-            beforeit = new List<BeforeItem>();
+            beforeit = new List<BeforeItem>(); // before와 after가 서로 다르다고 판별나면 최종적으로 이 변수에 담아서 업데이트한다.
             afterit = new List<AfterItem>();
             // BeforeItem과 AfterItem을 비교
-            foreach (var beforeItem in beforeItems)
+            foreach (var beforeItem in beforeItems) //beforeItem을 기준으로 AfterItem을 비교한다.
             {
                 bool matchFound = false;
                 foreach (var afterItem in afterItems)
                 {
-                    if (beforeItem.LDRA_Code == afterItem.LDRA_Code)
+                    if (beforeItem.LDRA_Code == afterItem.LDRA_Code) // 1. 에러의 LDRA가 같은 경우에는 내부적으로 같은 에러가 발생헀는지 PopUp을 이용하여 한번 더 확인한다.
                     {
+                        beforeViolations = htmlParser.popupHTMLPasing(beforeItem.HrefValue); //before쪽에 해당하는 에러의 popup을 파싱해온다.
+                        afterViolations = htmlParser.popupHTMLPasing(afterItem.HrefValue); //after쪽에 해당하는 에러의 popup을 파싱해온다.
 
-                        //popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
-                        beforeViolations = htmlParser.popupHTMLPasing(beforeItem.HrefValue);
-                        Console.WriteLine("before coune : " + beforeViolations.Count);
-                        afterViolations = htmlParser.popupHTMLPasing(afterItem.HrefValue);
-                        
-                        Console.WriteLine("after coune : " + afterViolations.Count);
                         bool flag = false;
 
-                        foreach (var beforeViolationItem in beforeViolations)
+                        foreach (var beforeViolationItem in beforeViolations) // before와 after의 각각의 popup도 before를 기준으로 동일한지 확인한다.
                         {
-                            if (!(beforeViolationItem.isDiff)) continue;
+                            if (!(beforeViolationItem.isDiff)) continue;       // 이미  동일한게 있었다고 판단되면 추가비교하지않고 넘어간다.
                             foreach (var afterViolationItem in afterViolations)
                             {
                                 if (!(afterViolationItem.isDiff)) continue;
-                                if (beforeViolationItem.IsSame(afterViolationItem))
+                                if (beforeViolationItem.IsSame(afterViolationItem))  // 서로 동일한지 비교
                                 {
                                     beforeViolationItem.isDiff = false;
                                     afterViolationItem.isDiff = false;
                                     break;
                                 }
-                                Console.WriteLine("엥??----");
                             }
                         }
 
-                        foreach (var beforeViolationItem in beforeViolations)
-                        {
-                            Console.WriteLine("오오오");
+                        foreach (var beforeViolationItem in beforeViolations) // isDiff가 true인 값이 있으면 flag를 true로 바꾼다
+                        {                                                     // == before와 after가 popup까지 비교했을 때 차이가 있다는 것을 의미 
                             if (flag == true) break;
                             if (beforeViolationItem.isDiff == true) flag = true;
                         }
@@ -285,9 +299,8 @@ namespace LDRA_Parser.ViewModel
                         }
 
 
-                        if (flag)
+                        if (flag) //flag가 true일 경우에만 beforeItem에 popup내용을 업데이트
                         {
-                            Console.WriteLine("오잉?");
                             foreach (var beforeViolationItem in beforeViolations)
                             {
                                 beforeItem.violationItems.Add(beforeViolationItem);
@@ -298,19 +311,17 @@ namespace LDRA_Parser.ViewModel
                             }
                         }
 
-                        Console.WriteLine("?????-------");
-                        if (beforeItem.violationItems.Count > 0 || afterItem.violationItems.Count > 0)
-                        {
-                            Console.WriteLine("다 어디갔어?-------");   
+                        if (beforeItem.violationItems.Count > 0 || afterItem.violationItems.Count > 0) // 업데이트 되었을 경우에만 변경사항을 반영시킨다.
+                        { 
                             beforeit.Add(beforeItem);
                             afterit.Add(afterItem);
                         }
-                        matchFound = true;
+                        matchFound = true; // LDRA가 같으면서 Popup에서 차이가 발견되었다는 의미.
                         break;
                     }
                 }
 
-                if (!matchFound)
+                if (!matchFound) // LDRA 부터 같은게 아예 발견되지 않았다는 의미 => before에만 존재하고 after에는 존재 X
                 {
                     ProcessNonMatchingBeforeItem(beforeItem, afterit);
                     beforeit.Add(beforeItem);
@@ -318,7 +329,7 @@ namespace LDRA_Parser.ViewModel
             }
 
             // AfterItem 기준으로도 비교
-            foreach (var afterItem in afterItems)
+            foreach (var afterItem in afterItems) // After에만 있고 Before에는 아예 없는 에러를 발견한다.
             {
                 if (beforeItems.All(beforeItem => beforeItem.LDRA_Code != afterItem.LDRA_Code))
                 {
@@ -331,56 +342,9 @@ namespace LDRA_Parser.ViewModel
             AfterVM.updateAfterList(afterit);
         }
 
-
-
-        //private void ProcessMatchingItems(BeforeItem beforeItem, AfterItem afterItem)
-        //{
-        //    popupHTMLPasing(beforeItem.HrefValue, afterItem.HrefValue);
-
-        //    bool flag = false;
-
-        //    foreach (var beforeViolationItem in beforeViolations)
-        //    {
-        //        if (!beforeViolationItem.isDiff) continue;
-        //        foreach (var afterViolationItem in afterViolations)
-        //        {
-        //            if (!afterViolationItem.isDiff) continue;
-        //            if (beforeViolationItem.IsSame(afterViolationItem))
-        //            { 
-        //                beforeViolationItem.isDiff = false;
-        //                afterViolationItem.isDiff = false;
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //    foreach (var beforeViolationItem in beforeViolations)
-        //    {
-        //        if (flag == true) break;
-
-        //        if(beforeViolationItem.isDiff == true) flag = true;
-        //    }
-
-        //    foreach (var afterViolationItem in afterViolations)
-        //    {
-        //        if (flag == true) break;
-        //        if (afterViolationItem.isDiff == true) flag = true;
-        //    }
-
-
-        //    if (flag)
-        //    {
-        //        foreach (var beforeViolationItem in beforeViolations)
-        //        {
-        //            beforeItem.violationItems.Add(beforeViolationItem);
-        //        }
-        //        foreach (var afterViolationItem in afterViolations)
-        //        {
-        //            afterItem.violationItems.Add(afterViolationItem);
-        //        }
-        //    }
-        //}
-
+        /**
+         * before에만 존재하고 after에는 존재하지 않을때
+         */
         private void ProcessNonMatchingBeforeItem(BeforeItem beforeItem, List<AfterItem> afterit)
         {
             beforeViolations = htmlParser.popupHTMLPasing(beforeItem.HrefValue);
@@ -391,6 +355,9 @@ namespace LDRA_Parser.ViewModel
             afterit.Add(null); // 칸 맞추기
         }
 
+        /**
+         *  after에만 존재하고 before에는 존재하지 않을때
+         */
         private void ProcessNonMatchingAfterItem(AfterItem afterItem, List<BeforeItem> beforeit)
         {
             afterViolations = htmlParser.popupHTMLPasing(afterItem.HrefValue);
@@ -400,60 +367,6 @@ namespace LDRA_Parser.ViewModel
             }
             beforeit.Add(null); // 칸 맞추기
         }
-
-
-        //public void popupHTMLPasing(string beforehtmlPath, string afterhtmlPath)
-        //{
-        //    // HTML 내용을 문자열로 읽어옵니다.
-        //    string beforeHtmlContent = File.ReadAllText(beforehtmlPath);
-        //    string afterHtmlContent = File.ReadAllText(afterhtmlPath);
-
-        //    // 정규 표현식 패턴을 정의합니다.
-        //    string pattern = @"<b>Violation Number</b> : (\d+ - .+?) &nbsp;&nbsp;&nbsp; <b>Location</b>  : <a href = '(.+?)'.*?>(.+?)</a> - <a href=.*?>(\d+)</a>";
-        //    // 정규 표현식을 사용하여 데이터를 추출합니다.
-        //    MatchCollection beforeMatches = Regex.Matches(beforeHtmlContent, pattern);
-        //    MatchCollection afterMatches = Regex.Matches(afterHtmlContent, pattern);
-
-
-        //    beforeViolations.Clear();
-        //    afterViolations.Clear();
-        //    // 추출된 각 매치를 처리합니다.
-        //    int id = 0; // 고유의 id번호 줄려고
-        //    foreach (Match match in beforeMatches)
-        //    {
-        //        id++;
-        //        string violationNumber = match.Groups[1].Value;
-        //        string location = match.Groups[2].Value;
-        //        string mainLocation = match.Groups[3].Value; // main
-        //        string lineNumber = match.Groups[4].Value; // 6
-
-        //        string result = $"Violation Number : {violationNumber}     Location : {location}";
-        //        //Console.WriteLine("before-------------------------------");
-        //        //Console.WriteLine(violationNumber);
-        //        //Console.WriteLine(location);
-        //        //Console.WriteLine(mainLocation);
-        //        //Console.WriteLine(lineNumber);
-        //        beforeViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
-        //    }
-        //    id = 0;
-        //    foreach (Match match in afterMatches)
-        //    {
-        //        id++;
-        //        string violationNumber = match.Groups[1].Value;
-        //        string location = match.Groups[2].Value;
-        //        string mainLocation = match.Groups[3].Value; // main
-        //        string lineNumber = match.Groups[4].Value; // 6
-
-        //        string result = $"Violation Number : {violationNumber}     Location : {location}";
-        //        //Console.WriteLine("after------------------------------");
-        //        //Console.WriteLine(violationNumber);
-        //        //Console.WriteLine(location);
-        //        //Console.WriteLine(mainLocation);
-        //        //Console.WriteLine(lineNumber);
-        //        afterViolations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });
-        //    }
-           
-        //}
 
         public List<ViolationItem> beforeHighlightComparedList(BeforeItem beforeCompared)
         {
