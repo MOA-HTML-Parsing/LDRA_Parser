@@ -1,18 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LDRA_Parser.Model;
 using System.ComponentModel;
 
 using System.Windows;
-using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Collections;
-using System.Text.RegularExpressions;
 using LDRA_Parser.Parser;
 //using System.Windows.Forms;
 

@@ -12,7 +12,7 @@ namespace LDRA_Parser.Model
 
         public string HrefValue { get; set; }//상세 에러(PopUp의 HTML)의 상세주소
 
-        public List<ViolationItem> violationItems { get; set; } // 문서 비교 후 변경된 내용을 담는 리스트
+        public List<ViolationItem> violationItems { get; set; }  // 표의 각 행의 세부 내용을 저장할 리스트
 
         public AfterItem(string violations, string code, string standards, string misraCode, string changedContent, string hrefValue)
         {

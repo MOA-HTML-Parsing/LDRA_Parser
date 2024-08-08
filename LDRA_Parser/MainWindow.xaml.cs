@@ -1,23 +1,11 @@
-
 ﻿using LDRA_Parser.ViewModel;
-﻿using Microsoft.Win32;
-using System;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using HtmlAgilityPack;
 using LDRA_Parser.Model;
-using System.Xml;
-using System.Text.RegularExpressions;
-using System.Diagnostics.Metrics;
 
 namespace LDRA_Parser
 {
@@ -32,7 +20,7 @@ namespace LDRA_Parser
             InitializeComponent();
             DataContext = new FileSystemViewModel();
 
-            _viewModel = DataContext as FileSystemViewModel;
+            _viewModel = DataContext as FileSystemViewModel; // FileSystemViewModel을 바인딩
         }
 
         /**
@@ -57,7 +45,7 @@ namespace LDRA_Parser
 
         }
 
-
+        // 특정 파일을 리스트뷰로 
         private void Import_Document(object sender, MouseButtonEventArgs e)
         {
             if (sender is TextBlock textBlock && textBlock.DataContext is FileSystemItem item)
@@ -86,6 +74,7 @@ namespace LDRA_Parser
 
         }
 
+        // 저장하기 관련 함수 (미완성)
         private string GenerateHtml(IEnumerable<BeforeItem> items)
         {
             var sb = new StringBuilder();
@@ -107,6 +96,7 @@ namespace LDRA_Parser
             return sb.ToString();
         }
 
+        // 저장하기 관련 함수 (미완성)
         private void SaveHtmlToFile(string htmlContent)
         {
             var dialog = new Microsoft.Win32.SaveFileDialog

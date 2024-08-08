@@ -1,16 +1,10 @@
 ﻿using LDRA_Parser.Model;
-using OpenQA.Selenium.DevTools.V124.Log;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace LDRA_Parser.Parser
 {
-    class HtmlParser
+    class HtmlParser // 세부 문서 HTML 파싱 클래스
     {
         private List<ViolationItem> violations;
         public List<ViolationItem> popupHTMLPasing(string htmlPath) 
@@ -30,10 +24,10 @@ namespace LDRA_Parser.Parser
             foreach (Match match in Matches)
             {
                 id++;
-                string violationNumber = match.Groups[1].Value;
-                string location = match.Groups[2].Value;
-                string mainLocation = match.Groups[3].Value; // main
-                string lineNumber = match.Groups[4].Value; // 6
+                string violationNumber = match.Groups[1].Value; // 추출한 데이터를 저장
+                string location = match.Groups[2].Value; // 추출한 데이터를 저장
+                string mainLocation = match.Groups[3].Value; // 추출한 데이터를 저장 
+                string lineNumber = match.Groups[4].Value; // 추출한 데이터를 저장 
 
                 string result = $"Violation Number : {violationNumber}     Location : {location}";
                 violations.Add(new ViolationItem { ViolationNumber = violationNumber, Location = location, MainLocation = mainLocation, LineNumber = lineNumber, idNumber = id });

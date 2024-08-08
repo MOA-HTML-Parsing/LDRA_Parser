@@ -1,11 +1,8 @@
 ﻿using LDRA_Parser.Model;
 using HtmlAgilityPack;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Net.Http;
-using OpenQA.Selenium.DevTools.V124.ServiceWorker;
 using System.Windows;
 
 namespace LDRA_Parser.ViewModel
@@ -41,6 +38,7 @@ namespace LDRA_Parser.ViewModel
                 foreach (var table in tables)
                 {
                     var thNodes = table.SelectNodes(".//tr/th");
+                    // th태그가 널이 아니고 개수가 4개이며 첫 번째 노드의 텍스트가 특정인 경우에만 추출
                     if (thNodes != null && thNodes.Count == 4 && thNodes[0].InnerText.Contains("Number of Violations"))
                     {
                         var rows = table.SelectNodes(".//tr");
