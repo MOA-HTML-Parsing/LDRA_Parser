@@ -13,7 +13,7 @@ namespace LDRA_Parser.Model
         public string LDRA_Code { get; set; }
         public string Rule_Standards { get; set; }
         public string MISRA_Code { get; set; }
-        public string Changed_Content { get; set; }
+        public string Changed_Content { get; set; } // Before & After 파일의 차이점을 담는 변수 (현재는 사용하고있지 않음)
 
         public string HrefValue { get; set; }
 

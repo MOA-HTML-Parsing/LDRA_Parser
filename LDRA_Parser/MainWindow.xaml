@@ -8,11 +8,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1440">
     <Window.DataContext>
-        <viewModel:FileSystemViewModel/>
+        <viewModel:FileSystemViewModel/>   <!-- 해당 창에서 FileSystemViewModel을 바인딩 -->
     </Window.DataContext>
-    <Grid Height="884" VerticalAlignment="Top">
+    <Grid Height="884" VerticalAlignment="Top"> <!-- 창을 그리드형태로 분할하여 각각의 뷰를 배치 -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="650"/>
+            <RowDefinition Height="650*"/>
             <RowDefinition Height="250*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -22,11 +22,12 @@
             <ColumnDefinition Width="199*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Load Files Button -->
-        <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,15,0" 
-                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0" Height="43"/>
+        <!-- 폴더 불러오기 버튼 -->
+        <Button Content="Load Files" Click="OnLoadFilesClicked" Width="Auto" Margin="15,30,0,0" 
+                VerticalAlignment="Top" Padding="10" FontSize="16" Grid.Row="0"/>
 
-        <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,0" Grid.RowSpan="2">
+        <!-- 불러온 폴더의 구조를 출력하는 TreeView -->
+        <TreeView ItemsSource="{Binding Items}" Margin="15,100,0,10" Grid.RowSpan="2">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local_2:FileSystemItem}" ItemsSource="{Binding Children}">
                     <TextBlock x:Name="input_textblock" MouseRightButtonDown="Import_Document" Text="{Binding Name}" />
@@ -34,12 +35,11 @@
             </TreeView.Resources>
         </TreeView>
 
-        <Rectangle  Fill="#40000000" HorizontalAlignment="Left" Margin="2,0,0,0" Grid.Column="1" Width="0"/>
-
-        <!-- Before ListView -->
+        <!-- Before 폴더의 파일을 파싱하여 리스트 형태로 출력하는 ListView -->
         <ListView x:Name="BeforeList" ItemsSource="{Binding BeforeVM.BeforeViewList}" Margin="15,100,15,10" Grid.Column="1" MouseDoubleClick="BeforeList_MouseDoubleClick">
             <ListView.View>
                 <GridView>
+                    <!-- 각각의 칼럼을 출력하는 텍스트 블럭 -->
                     <GridViewColumn Width="140">
                         <GridViewColumn.Header>
                             <TextBlock Text="Number of Violations" Margin="5" FontWeight="Bold"/>
@@ -88,6 +88,7 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="ListViewItem">
                                 <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Padding="5" Margin="2">
+                                    <!-- 각 칼럼에 해당하는 데이터가 바인딩되는 부분 -->
                                     <StackPanel>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -101,7 +102,7 @@
                                             <TextBlock Text="{Binding Rule_Standards}" Grid.Column="2" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
                                             <TextBlock Text="{Binding MISRA_Code}" Grid.Column="3" Margin="5" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
                                         </Grid>
-                                        <!-- Details ListBox -->
+                                        <!-- 하나의 아이템 내부 문서를 파싱하여 내부의 ListBox에 세부 내용을 담는 부분 -->
                                         <ListBox x:Name="ParsedHtmlListBox" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="200" Visibility="Collapsed" Grid.ColumnSpan="4">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
@@ -117,6 +118,7 @@
                                                         <StackPanel.Style>
                                                             <Style TargetType="StackPanel">
                                                                 <Style.Triggers>
+                                                                    <!-- 세부 내용에서 Before와 After가 다르다면 트리거를 작동시켜 노란색으로 칠함 -->
                                                                     <DataTrigger Binding="{Binding isDiff}" Value="True">
                                                                         <Setter Property="Background" Value="Yellow"/>
                                                                     </DataTrigger>
@@ -130,6 +132,7 @@
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
+                                    <!-- 마우스가 해당 아이템 위로 올라가면 트리거를 작동시켜 배경색을 칠함 -->
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="border" Property="Background" Value="LightYellow"/>
                                     </Trigger>
@@ -141,7 +144,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
 
-        <!-- After ListView -->
+        <!-- After 폴더에서 파일을 파싱할 경우 출력하는 ListView로 내부 코드 구조는 Before ListVeiw와 동일 -->
         <ListView x:Name="AfterList" ItemsSource="{Binding AfterVM.AfterViewList}" Margin="15,100,15,10" Grid.Column="2" Grid.ColumnSpan="2" MouseDoubleClick="AfterList_MouseDoubleClick">
             <ListView.View>
                 <GridView>
@@ -246,10 +249,13 @@
             </ListView.ItemContainerStyle>
         </ListView>
 
-        <!-- Labels and Buttons -->
-        <Label Content="BEFORE" HorizontalAlignment="Left" Height="55" Margin="44,31,0,0" VerticalAlignment="Top" Width="109" Grid.Column="1"/>
-        <Label Content="AFTER" HorizontalAlignment="Left" Height="24" Margin="32,44,0,0" VerticalAlignment="Top" Width="112" Grid.Column="2"/>
-        <Button  Content="Save" Width="Auto" VerticalAlignment="Top" Margin="13,90,15,90" Grid.Column="3" Grid.Row="1" Click="Save_Click"/>
+        <!-- Before ListView에 해당하는 라벨 -->
+        <Label Content="BEFORE" HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top" Grid.Column="1" FontSize="16" />
+        <!-- Before ListView에 해당하는 라벨 -->
+        <Label Content="AFTER" HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top" FontSize="16" Grid.Column="2" Grid.ColumnSpan="2"/>
+        <!-- 결과를 출력하는 ListView 내용을 저장하는 버튼 -->
+        <Button  Content="Save" FontSize="16" Padding="10" VerticalAlignment="Top" Margin="13,10,15,00" Grid.Column="3" Grid.Row="1" Click="Save_Click"/>
+        <!-- Before ListView와 After ListView를 비교한 내용을 출력하는 ListView -->
         <ListView d:ItemsSource="{d:SampleData ItemCount=5}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="20,10,45,10" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1">
             <ListView.View>
                 <GridView>
@@ -257,7 +263,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Grid.Column="1" Content="Compare" HorizontalAlignment="Left" Margin="553,32,0,0" VerticalAlignment="Top" Height="42" Width="52" Click="Button_Click_Compare"/>
+        <!-- Before ListView와 After ListView를 비교하여 차이를 출력시키는 버튼 -->
+        <Button Grid.Column="2" Grid.ColumnSpan="2" Content="Compare" FontSize="16" HorizontalAlignment="Right" Margin="0,30,15,0" VerticalAlignment="Top" Padding="10" Click="Button_Click_Compare"/>
 
     </Grid>
 </Window>
