@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace LDRA_Parser.Model
 {
+    /**
+     *  PopUp(상세에러) 을 담기 위한 클래스
+     */
     public class ViolationItem
     {
         public string ViolationNumber { get; set; }
@@ -45,6 +48,10 @@ namespace LDRA_Parser.Model
             this.isDiff = isDiff; // 기본값 설정
         }
 
+        /**
+         * 같은지 여부를 비교할때 사용하는 함수
+         * ViolationNumber, Location, MainLocation, LineNumber가 동일한지 확인한다.
+         */
         public bool IsSame(ViolationItem item)
         {
 

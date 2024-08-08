@@ -35,6 +35,10 @@ namespace LDRA_Parser
             _viewModel = DataContext as FileSystemViewModel;
         }
 
+        /**
+         * LoadFiles를 클릭했을때 실행된다.
+         * 폴더구조를 트리형태로 나타낸다. 
+         */
         private void OnLoadFilesClicked(object sender, RoutedEventArgs e)
         {
             if (_viewModel != null)
@@ -69,15 +73,16 @@ namespace LDRA_Parser
 
         /*
          * 저장하기
+         * 미완성입니다!!
          */
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            var items = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
-            if (items != null)
-            {
-                var htmlContent = GenerateHtml(items);
-                SaveHtmlToFile(htmlContent);
-            }
+            //var items = BeforeList.ItemsSource as IEnumerable<BeforeItem>;
+            //if (items != null)
+            //{
+            //    var htmlContent = GenerateHtml(items);
+            //    SaveHtmlToFile(htmlContent);
+            //}
 
         }
 
